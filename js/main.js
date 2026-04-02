@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initPageLoad();
     initProgressBars();
     initGlitchEffect();
+    init3DTilt();
 });
 
 // Theme Toggle
@@ -293,10 +294,12 @@ function initSmoothScroll() {
 // Nav background on scroll
 window.addEventListener('scroll', () => {
     const nav = document.querySelector('.nav');
+    if (!nav) return;
+    
     if (window.scrollY > 50) {
-        nav.style.background = 'rgba(10, 10, 10, 0.95)';
+        nav.classList.add('scrolled');
     } else {
-        nav.style.background = 'rgba(10, 10, 10, 0.8)';
+        nav.classList.remove('scrolled');
     }
 }, { passive: true });
 
