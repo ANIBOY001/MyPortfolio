@@ -358,16 +358,21 @@ body:hover .cursor-glow {
 
 .hero-content {
     text-align: center;
-    max-width: 900px;
+    max-width: 1200px;
     z-index: 2;
     position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    grid-template-rows: auto auto auto;
+    gap: 0 60px;
+    align-items: start;
+    padding: 0 40px;
 }
 
 .hero-greeting {
     font-family: 'VT323', monospace;
     font-size: 26px;
     color: #808080;
-    margin-bottom: 20px;
     letter-spacing: 4px;
     text-transform: uppercase;
     font-weight: 700;
@@ -375,14 +380,33 @@ body:hover .cursor-glow {
         3px 3px 0px rgba(60, 60, 60, 0.8),
         6px 6px 0px rgba(40, 40, 40, 0.6),
         9px 9px 0px rgba(20, 20, 20, 0.4);
+    grid-column: 1;
+    grid-row: 1;
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.hero-subtitle {
+    font-family: 'VT323', monospace;
+    font-size: 24px;
+    color: #707070;
+    max-width: 400px;
+    letter-spacing: 2px;
+    font-weight: 600;
+    text-shadow: 
+        3px 3px 0px rgba(50, 50, 50, 0.7),
+        6px 6px 0px rgba(30, 30, 30, 0.5);
+    grid-column: 1;
+    grid-row: 2;
+    text-align: left;
+    margin: 0 0 40px;
 }
 
 .hero-title {
     font-family: 'VT323', monospace;
-    font-size: clamp(55px, 12vw, 100px);
+    font-size: clamp(55px, 8vw, 100px);
     font-weight: 700;
     line-height: 1;
-    margin-bottom: 24px;
     letter-spacing: 2px;
     color: #a0a0a0;
     text-shadow: 
@@ -390,6 +414,11 @@ body:hover .cursor-glow {
         8px 8px 0px rgba(60, 60, 60, 0.7),
         12px 12px 0px rgba(40, 40, 40, 0.5),
         16px 16px 0px rgba(20, 20, 20, 0.3);
+    grid-column: 2;
+    grid-row: 1 / 3;
+    text-align: right;
+    align-self: center;
+    margin-bottom: 0;
 }
 
 .gradient-text {
@@ -398,7 +427,6 @@ body:hover .cursor-glow {
     background-clip: text;
     -webkit-text-fill-color: transparent;
     text-shadow: none;
-    position: relative;
 }
 
 .gradient-text::after {
@@ -435,6 +463,8 @@ body:hover .cursor-glow {
     gap: 16px;
     justify-content: center;
     margin-bottom: 60px;
+    grid-column: 1 / 3;
+    grid-row: 3;
 }
 
 .hero-stats {
