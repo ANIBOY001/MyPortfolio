@@ -1,10 +1,19 @@
 // WebGL Fluid Cursor - Smooth Butter-like Fluid Simulation
 (function() {
+    console.log('Fluid cursor initializing...');
+    
     // Skip on touch devices
-    if (window.matchMedia('(pointer: coarse)').matches) return;
+    if (window.matchMedia('(pointer: coarse)').matches) {
+        console.log('Touch device detected, skipping fluid cursor');
+        return;
+    }
     
     const canvas = document.getElementById('fluid-cursor');
-    if (!canvas) return;
+    if (!canvas) {
+        console.error('Fluid cursor canvas not found!');
+        return;
+    }
+    console.log('Canvas found:', canvas);
     
     const gl = canvas.getContext('webgl', {
         alpha: true,
@@ -13,9 +22,10 @@
     }) || canvas.getContext('experimental-webgl');
     
     if (!gl) {
-        console.log('WebGL not supported, falling back to CSS cursor');
+        console.error('WebGL not supported!');
         return;
     }
+    console.log('WebGL context created');
     
     // Configuration
     const config = {
@@ -360,32 +370,36 @@
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     }
     
-    // Input tracking
+    // Input tracking - use window to capture all mouse movement
     const inputs = [];
     let lastMouseX = 0;
     let lastMouseY = 0;
+    let hasMoved = false;
     
     function getSimCoords(clientX, clientY) {
         return {
-            x: clientX / canvas.width,
-            y: 1.0 - clientY / canvas.height
+            x: clientX / window.innerWidth,
+            y: 1.0 - clientY / window.innerHeight
         };
     }
     
-    canvas.addEventListener('mousemove', (e) => {
-        const rect = canvas.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
+    window.addEventListener('mousemove', (e) => {
+        if (!hasMoved) {
+            lastMouseX = e.clientX;
+            lastMouseY = e.clientY;
+            hasMoved = true;
+            return;
+        }
         
-        const dx = x - lastMouseX;
-        const dy = y - lastMouseY;
+        const dx = e.clientX - lastMouseX;
+        const dy = e.clientY - lastMouseY;
         const dist = Math.sqrt(dx * dx + dy * dy);
         
-        if (dist > 1) {
-            const simPos = getSimCoords(x, y);
+        if (dist > 2) {
+            const simPos = getSimCoords(e.clientX, e.clientY);
             const velocity = {
-                x: dx * 2.5 / canvas.width,
-                y: -dy * 2.5 / canvas.height
+                x: dx * 3.0 / window.innerWidth,
+                y: -dy * 3.0 / window.innerHeight
             };
             
             inputs.push({
@@ -395,10 +409,10 @@
                 dy: velocity.y,
                 color: config.color
             });
+            
+            lastMouseX = e.clientX;
+            lastMouseY = e.clientY;
         }
-        
-        lastMouseX = x;
-        lastMouseY = y;
     }, { passive: true });
     
     // Splat function
@@ -539,6 +553,7 @@
     }
     
     // Render
+    let frameCount = 0;
     function render() {
         step();
         
@@ -552,6 +567,11 @@
         gl.bindTexture(gl.TEXTURE_2D, densityFBO.read.texture);
         blit(null);
         
+        frameCount++;
+        if (frameCount % 60 === 0) {
+            console.log('Fluid cursor rendering, frame:', frameCount, 'inputs:', inputs.length);
+        }
+        
         requestAnimationFrame(render);
     }
     
@@ -559,6 +579,7 @@
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     
+    console.log('Starting fluid cursor render loop');
     // Start
     render();
 })();
