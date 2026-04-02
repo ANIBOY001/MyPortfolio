@@ -31,19 +31,19 @@
     const texType = useHalfFloat ? ext.HALF_FLOAT_OES : gl.UNSIGNED_BYTE;
     const filtering = linearExt ? gl.LINEAR : gl.NEAREST;
 
-    // Configuration - Customized for silver-black water effect
+    // Configuration - Premium Liquid Atmosphere
     const config = {
         SIM_RESOLUTION: 128,
         DYE_RESOLUTION: 512,
-        DENSITY_DISSIPATION: 0.996,    // Fade faster (was 0.992)
-        VELOCITY_DISSIPATION: 0.99,    // Slower fluid motion
+        DENSITY_DISSIPATION: 0.975,    // High dissipation - fade fast
+        VELOCITY_DISSIPATION: 0.97,    // Slow cinematic speed
         PRESSURE: 0.8,
         PRESSURE_ITERATIONS: 20,
-        CURL: 35,                      // Chaotic swirls
-        SPLAT_RADIUS: 0.08,            // Much thinner (was 0.15)
-        SPLAT_FORCE: 2500,             // Less spread (was 4000)
-        COLOR: { r: 0.75, g: 0.75, b: 0.78 },  // Silver base
-        EDGE_COLOR: { r: 0.4, g: 0.5, b: 0.7 }  // Blueish edges
+        CURL: 12,                      // Medium-low curl - smooth, not chaotic
+        SPLAT_RADIUS: 0.25,            // Medium-large splats (80-160px feel)
+        SPLAT_FORCE: 1500,             // Slow, smooth reaction
+        COLOR: { r: 0.235, g: 0.949, b: 0.89 },  // Muted cyan #3cf2e3 (toned down)
+        EDGE_COLOR: { r: 0.4, g: 0.35, b: 0.55 }  // Slight purple/blue shift
     };
 
     // Resize
@@ -200,13 +200,20 @@
         }
     `;
 
-    // Display shader with silver-black water effect, blueish edges, and glow
+    // Display shader - Premium Liquid Atmosphere
+    // Very low density, soft additive glow, desaturated muted cyan
     const displayShader = `
         precision highp float;
         varying vec2 vUv;
         uniform sampler2D uTexture;
         uniform vec3 color;
         uniform vec3 edgeColor;
+        
+        // Desaturate function
+        vec3 desaturate(vec3 c, float amount) {
+            float gray = dot(c, vec3(0.299, 0.587, 0.114));
+            return mix(c, vec3(gray), amount);
+        }
         
         float hash(vec2 p) {
             return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
@@ -235,24 +242,33 @@
             vec4 c = texture2D(uTexture, vUv);
             float density = (c.r + c.g + c.b) * 0.333;
             
-            // Add smoke texture
-            float smoke = fbm(vUv * 3.0 + c.xy * 2.0) * 0.3 + 0.7;
+            // Very low density - airy, thin smoke
+            density *= 0.15;
+            
+            // Add subtle texture
+            float smoke = fbm(vUv * 2.0 + c.xy * 1.5) * 0.2 + 0.8;
             density *= smoke;
             
-            // Edge detection for blueish tint at edges
-            float edge = smoothstep(0.3, 0.8, density);
+            // Edge blend for purple/blue shift
+            float edge = smoothstep(0.1, 0.5, density);
             vec3 finalColor = mix(edgeColor, color, edge);
             
-            // Water sliding visibility boost
-            finalColor *= density * 2.5;
+            // Desaturate for premium feel (40% desaturation)
+            finalColor = desaturate(finalColor, 0.4);
             
-            // Glow at edges
-            float glow = exp(-density * 4.0) * 0.4;
-            finalColor += edgeColor * glow;
+            // Tone down brightness
+            finalColor *= 0.7;
             
-            // More visible alpha (water effect)
-            float alpha = min(density * 0.8, 0.7);
-            alpha = max(alpha, glow * 0.3);
+            // Soft additive glow at edges (felt, not seen)
+            float glow = exp(-density * 6.0) * 0.25;
+            finalColor += edgeColor * glow * 0.5;
+            
+            // Very low opacity - critical for premium look (0.03 - 0.12 range)
+            float alpha = density * 0.08;
+            alpha = clamp(alpha, 0.0, 0.12);
+            
+            // Additional glow contribution to alpha
+            alpha += glow * 0.03;
             
             gl_FragColor = vec4(finalColor, alpha);
         }
@@ -587,11 +603,12 @@
 
         step(dt);
 
-        // Display
+        // Display - Premium liquid atmosphere
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
         gl.viewport(0, 0, canvas.width, canvas.height);
+        // Additive blend for soft glow effect
         gl.enable(gl.BLEND);
-        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
         bind(displayProgram);
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, density.read.texture);
