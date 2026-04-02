@@ -9,10 +9,12 @@
     if (window.matchMedia('(pointer: coarse)').matches) return;
 
     const canvas = document.getElementById('fluid-cursor');
-    if (!canvas) return;
+    if (!canvas) { console.log('Canvas not found'); return; }
 
     const gl = canvas.getContext('webgl', { alpha: true, antialias: false, preserveDrawingBuffer: false });
-    if (!gl) return;
+    if (!gl) { console.log('WebGL not supported'); return; }
+    
+    console.log('Fluid canvas initialized');
 
     const ext = gl.getExtension('OES_texture_half_float');
     const linearExt = gl.getExtension('OES_texture_half_float_linear');
@@ -32,7 +34,8 @@
         SPLAT_FORCE: 3000,
         COLOR: { r: 0.06, g: 0.06, b: 0.06 },
         BLUR_AMOUNT: 2.0,
-        SMOOTHING: 0.08
+        SMOOTHING: 0.08,
+        IDLE_STRENGTH: 0.15
     };
 
     // Resize
@@ -227,11 +230,11 @@
             float glow = exp(-density * 4.0) * 1.2;
             finalColor += color * glow * 0.3;
             
-            // Low opacity - subtle but visible
-            float alpha = density * 0.08;
-            alpha = clamp(alpha, 0.0, 0.08);
+            // Low opacity - visible but subtle
+            float alpha = density * 0.12;
+            alpha = clamp(alpha, 0.0, 0.15);
             
-            gl_FragColor = vec4(finalColor, alpha * 0.5);
+            gl_FragColor = vec4(finalColor, alpha);
         }
     `;
 
@@ -540,10 +543,10 @@
             cursorX += dx * config.SMOOTHING;
             cursorY += dy * config.SMOOTHING;
             
-            // Throttled splat - only every 50ms
+            // Throttled splat - only every 16ms (60fps)
             const now = Date.now();
-            if (now - lastSplatTime > 50 && (Math.abs(dx) > 0.002 || Math.abs(dy) > 0.002)) {
-                splat(cursorX, cursorY, dx * 30, dy * 30, 0.4);
+            if (now - lastSplatTime > 16 && (Math.abs(dx) > 0.002 || Math.abs(dy) > 0.002)) {
+                splat(cursorX, cursorY, dx * 50, dy * 50, 0.6);
                 lastSplatTime = now;
             }
         }
