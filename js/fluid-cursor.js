@@ -35,15 +35,15 @@
     const config = {
         SIM_RESOLUTION: 128,
         DYE_RESOLUTION: 512,
-        DENSITY_DISSIPATION: 0.97,     // Fast fade - no build-up
+        DENSITY_DISSIPATION: 0.985,   // Faster fade - less trailing
         VELOCITY_DISSIPATION: 0.985,   // Slow cinematic speed
         PRESSURE: 0.8,
         PRESSURE_ITERATIONS: 20,
         CURL: 25,                      // Medium curl - wide smooth vortices
         SPLAT_RADIUS: 0.15,            // A little smaller
         SPLAT_FORCE: 4500,
-        COLOR: { r: 0.88, g: 0.88, b: 0.9 },  // Brighter silver - more stand out
-        EDGE_COLOR: { r: 0.55, g: 0.55, b: 0.6 }, // Slight blue-gray shift
+        COLOR: { r: 0.45, g: 0.45, b: 0.48 },  // Gray-black
+        EDGE_COLOR: { r: 0.35, g: 0.35, b: 0.4 }, // Darker edge
         IDLE_MOTION: true,             // Continuous subtle background motion
         COLOR_SHIFT_SPEED: 0.02        // HSV dynamic color shifting
     };
@@ -258,10 +258,10 @@
             // Desaturate for premium feel (30% desaturation)
             finalColor = desaturate(finalColor, 0.3);
             
-            // Bright wave glow - more visible but not foggy
-            float glow = exp(-density * 2.0) * 1.5;
-            float waveGlow = density * 0.8;
-            finalColor += color * (glow + waveGlow) * 1.8;
+            // More glow - brighter and wider
+            float glow = exp(-density * 1.8) * 2.0;
+            float waveGlow = density * 0.9;
+            finalColor += color * (glow + waveGlow) * 2.2;
             
             // Very low opacity - more dense but no fog (0.03 - 0.12 range)
             float alpha = density * 0.06;
