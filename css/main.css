@@ -161,31 +161,12 @@ body:hover .cursor-glow {
     font-size: 24px;
     font-weight: 700;
     color: var(--text-primary);
-    position: relative;
     letter-spacing: 1px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
     text-decoration: none;
 }
 
-.nav-logo {
-    width: 32px;
-    height: 32px;
-    border-radius: 6px;
-    object-fit: contain;
-    display: block;
-}
-
 .nav-brand span {
-    background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.nav-brand:hover span {
-    filter: brightness(1.2);
+    color: var(--text-primary);
 }
 
 .nav-links {
