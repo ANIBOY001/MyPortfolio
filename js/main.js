@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initTypewriter();
     initParallax();
     initFloatingElements();
-    initMagneticHover();
     initPageLoad();
     initProgressBars();
     initGlitchEffect();
@@ -77,7 +76,7 @@ function initCursorGlow() {
 
 // Scroll Reveal Animation
 function initScrollReveal() {
-    const reveals = document.querySelectorAll('.project-card, .skill-category, .timeline-item, .about-content, .about-visual');
+    const reveals = document.querySelectorAll('.project-card, .skill-category, .timeline-item, .about-content, .about-visual, .service-card, .testimonial-card, .blog-card, .process-step');
     
     reveals.forEach(el => el.classList.add('reveal'));
     
@@ -86,7 +85,8 @@ function initScrollReveal() {
             if (entry.isIntersecting) {
                 setTimeout(() => {
                     entry.target.classList.add('active');
-                }, index * 100);
+                    entry.target.style.transition = 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
+                }, index * 80);
                 observer.unobserve(entry.target);
             }
         });
@@ -164,8 +164,11 @@ const projectData = {
 function initProjectModal() {
     const modal = document.getElementById('project-modal');
     const modalBody = document.getElementById('modal-body');
+    if (!modal || !modalBody) return;
+    
     const closeBtn = modal.querySelector('.modal-close');
     const backdrop = modal.querySelector('.modal-backdrop');
+    if (!closeBtn || !backdrop) return;
     
     document.querySelectorAll('.project-details-btn').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -221,9 +224,6 @@ function initContactForm() {
     const form = document.getElementById('contact-form');
     const statusDiv = document.getElementById('form-status');
     if (!form) return;
-
-    const btn = form.querySelector('button[type="submit"]');
-    const originalText = btn ? btn.textContent : 'Copy to Clipboard & Open Email';
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -369,25 +369,6 @@ function initFloatingElements() {
     });
 }
 
-// Magnetic Hover Effect
-function initMagneticHover() {
-    const buttons = document.querySelectorAll('.btn, .project-card, .service-card, .blog-card');
-    
-    buttons.forEach(btn => {
-        btn.addEventListener('mousemove', (e) => {
-            const rect = btn.getBoundingClientRect();
-            const x = e.clientX - rect.left - rect.width / 2;
-            const y = e.clientY - rect.top - rect.height / 2;
-            
-            btn.style.transform = `translate(${x * 0.1}px, ${y * 0.1}px)`;
-        });
-        
-        btn.addEventListener('mouseleave', () => {
-            btn.style.transform = '';
-        });
-    });
-}
-
 // Page Load Animation
 function initPageLoad() {
     const elements = document.querySelectorAll('.hero-title, .hero-subtitle, .hero-cta, .hero-stats');
@@ -482,27 +463,6 @@ function initGlitchEffect() {
     brand.addEventListener('mouseleave', () => {
         brand.textContent = originalText;
     });
-}
-
-// Enhanced Scroll Reveal with Stagger
-function initScrollReveal() {
-    const reveals = document.querySelectorAll('.project-card, .skill-category, .timeline-item, .about-content, .about-visual, .service-card, .testimonial-card, .blog-card, .process-step');
-    
-    reveals.forEach(el => el.classList.add('reveal'));
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry, index) => {
-            if (entry.isIntersecting) {
-                setTimeout(() => {
-                    entry.target.classList.add('active');
-                    entry.target.style.transition = 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
-                }, index * 80);
-                observer.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-    
-    reveals.forEach(el => observer.observe(el));
 }
 
 // 3D Tilt Effect for Cards
