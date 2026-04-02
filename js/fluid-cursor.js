@@ -259,14 +259,15 @@
             // Boost brightness for visibility
             finalColor *= 1.2;
             
-            // Soft glow at edges
-            float glow = exp(-density * 5.0) * 0.3;
-            finalColor += edgeColor * glow * 0.4;
+            // Bright glow at edges and center
+            float glow = exp(-density * 3.0) * 0.8;
+            float centerGlow = density * 0.5;
+            finalColor += color * (glow + centerGlow) * 1.5;
             
-            // Low opacity but visible (0.05 - 0.25 range)
-            float alpha = density * 0.15;
-            alpha = clamp(alpha, 0.0, 0.25);
-            alpha += glow * 0.05;
+            // Higher opacity for visibility (0.1 - 0.4 range)
+            float alpha = density * 0.25;
+            alpha = clamp(alpha, 0.0, 0.4);
+            alpha += glow * 0.15;
             
             gl_FragColor = vec4(finalColor, alpha);
         }
