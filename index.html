@@ -409,7 +409,7 @@
                 <div class="contact-content">
                     <h2 class="section-title">Let's Build Something Impactful</h2>
                     <p class="contact-subtitle">Have a project in mind? Let's discuss how we can work together.</p>
-                    <form class="contact-form" action="mailto:Sheikhmohammad7878@gmail.com" method="POST" enctype="text/plain">
+                    <form class="contact-form" id="contact-form">
                         <div class="form-group">
                             <input type="text" name="name" class="form-input" placeholder="Your Name" required>
                         </div>
@@ -422,7 +422,8 @@
                         <div class="form-group">
                             <textarea name="message" class="form-input form-textarea" placeholder="Tell me about your project" required></textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-lg">Send Message</button>
+                        <button type="submit" class="btn btn-primary btn-lg">Copy to Clipboard & Open Email</button>
+                        <div id="form-status" class="form-status"></div>
                     </form>
                     <div class="contact-links">
                         <a href="mailto:alex@example.com" class="contact-link">Sheikhmohammad7878@gmail.com</a>

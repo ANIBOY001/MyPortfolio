@@ -216,79 +216,65 @@ function initProjectModal() {
     });
 }
 
-// Contact Form Handler
+// Contact Form Handler - Copy to clipboard + open email
 function initContactForm() {
     const form = document.getElementById('contact-form');
+    const statusDiv = document.getElementById('form-status');
     if (!form) return;
 
-    const action = form.getAttribute('action');
     const btn = form.querySelector('button[type="submit"]');
-    const statusDiv = document.getElementById('form-status');
-
-    // If using mailto, let browser handle it naturally - DO NOT add any JS handlers
-    if (action && action.startsWith('mailto:')) {
-        // Show a brief message when form submits
-        form.addEventListener('submit', () => {
-            if (statusDiv) {
-                statusDiv.textContent = 'Opening your email client...';
-                statusDiv.className = 'form-status success visible';
-            }
-        });
-        // Return early - let the browser handle the mailto
-        return;
-    }
-
-    // Formspree handling for non-mailto forms
-    const originalText = btn ? btn.textContent : 'Send Message';
+    const originalText = btn ? btn.textContent : 'Copy to Clipboard & Open Email';
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        if (btn) {
-            btn.disabled = true;
-            btn.textContent = 'Sending...';
-        }
-        if (statusDiv) {
-            statusDiv.className = 'form-status';
-        }
+        // Get form data
+        const formData = new FormData(form);
+        const name = formData.get('name');
+        const email = formData.get('email');
+        const subject = formData.get('subject');
+        const message = formData.get('message');
+
+        // Format email body
+        const emailBody = `Name: ${name}
+Email: ${email}
+
+Message:
+${message}`;
 
         try {
-            const formData = new FormData(form);
-            const response = await fetch(form.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'Accept': 'application/json'
-                }
-            });
+            // Copy to clipboard
+            await navigator.clipboard.writeText(emailBody);
 
-            const data = await response.json().catch(() => null);
-
-            if (response.ok) {
-                if (statusDiv) {
-                    statusDiv.textContent = 'Message sent successfully! I\'ll get back to you soon.';
-                    statusDiv.className = 'form-status success visible';
-                }
-                form.reset();
-            } else {
-                console.error('Formspree error:', response.status, data);
-                throw new Error(data?.error || `Failed to send (${response.status})`);
-            }
-        } catch (error) {
-            console.error('Form submission error:', error);
+            // Show success message
             if (statusDiv) {
-                statusDiv.textContent = 'Failed to send. Please try again or email me directly at Sheikhmohammad7878@gmail.com';
-                statusDiv.className = 'form-status error visible';
+                statusDiv.textContent = 'Message copied to clipboard! Opening your email client...';
+                statusDiv.className = 'form-status success visible';
             }
-        } finally {
-            if (btn) {
-                btn.textContent = originalText;
-                btn.disabled = false;
+
+            // Open email client
+            const mailtoLink = `mailto:Sheikhmohammad7878@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
+            window.location.href = mailtoLink;
+
+            // Reset form after delay
+            setTimeout(() => {
+                form.reset();
+                if (statusDiv) statusDiv.classList.remove('visible');
+            }, 5000);
+
+        } catch (err) {
+            // Fallback: just open email client
+            const mailtoLink = `mailto:Sheikhmohammad7878@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
+            window.location.href = mailtoLink;
+
+            if (statusDiv) {
+                statusDiv.textContent = 'Opening your email client...';
+                statusDiv.className = 'form-status success visible';
             }
 
             setTimeout(() => {
                 if (statusDiv) statusDiv.classList.remove('visible');
-            }, 8000);
+            }, 5000);
         }
     });
 }
