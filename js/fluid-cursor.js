@@ -42,8 +42,8 @@
         CURL: 25,                      // Medium curl - wide smooth vortices
         SPLAT_RADIUS: 0.15,            // A little smaller
         SPLAT_FORCE: 4500,
-        COLOR: { r: 0.35, g: 0.35, b: 0.38 },  // Darker gray-black
-        EDGE_COLOR: { r: 0.25, g: 0.25, b: 0.3 }, // Darker edge
+        COLOR: { r: 0.28, g: 0.28, b: 0.31 },  // Even darker gray-black
+        EDGE_COLOR: { r: 0.2, g: 0.2, b: 0.25 }, // Darker edge
         IDLE_MOTION: true,             // Continuous subtle background motion
         COLOR_SHIFT_SPEED: 0.02        // HSV dynamic color shifting
     };
@@ -258,10 +258,10 @@
             // Desaturate for premium feel (30% desaturation)
             finalColor = desaturate(finalColor, 0.3);
             
-            // Much more glow
-            float glow = exp(-density * 1.5) * 3.0;
-            float waveGlow = density * 1.2;
-            finalColor += color * (glow + waveGlow) * 3.0;
+            // Much more glow - very bright
+            float glow = exp(-density * 1.3) * 4.0;
+            float waveGlow = density * 1.5;
+            finalColor += color * (glow + waveGlow) * 4.0;
             
             // Very low opacity - more dense but no fog (0.03 - 0.12 range)
             float alpha = density * 0.06;
