@@ -35,13 +35,13 @@
     const config = {
         SIM_RESOLUTION: 128,
         DYE_RESOLUTION: 512,
-        DENSITY_DISSIPATION: 0.992,  // Linger longer
-        VELOCITY_DISSIPATION: 0.985,   // Slower fluid motion
+        DENSITY_DISSIPATION: 0.996,    // Fade faster (was 0.992)
+        VELOCITY_DISSIPATION: 0.99,    // Slower fluid motion
         PRESSURE: 0.8,
         PRESSURE_ITERATIONS: 20,
-        CURL: 35,                      // More chaotic swirls
-        SPLAT_RADIUS: 0.15,            // Smaller size
-        SPLAT_FORCE: 4000,
+        CURL: 35,                      // Chaotic swirls
+        SPLAT_RADIUS: 0.08,            // Much thinner (was 0.15)
+        SPLAT_FORCE: 2500,             // Less spread (was 4000)
         COLOR: { r: 0.75, g: 0.75, b: 0.78 },  // Silver base
         EDGE_COLOR: { r: 0.4, g: 0.5, b: 0.7 }  // Blueish edges
     };
@@ -395,7 +395,9 @@
 
     // ==================== SIMULATION ====================
 
-    function splat(x, y, dx, dy) {
+    function splat(x, y, dx, dy, intensity = 1.0) {
+        const colorScale = intensity * 1.5;
+        
         gl.bindFramebuffer(gl.FRAMEBUFFER, density.write.fbo);
         gl.viewport(0, 0, density.write.width, density.write.height);
         bind(splatProgram);
@@ -403,7 +405,7 @@
         gl.bindTexture(gl.TEXTURE_2D, density.read.texture);
         gl.uniform1i(splatUni.uTarget, 0);
         gl.uniform1f(splatUni.aspectRatio, canvas.width / canvas.height);
-        gl.uniform3f(splatUni.color, config.COLOR.r, config.COLOR.g, config.COLOR.b);
+        gl.uniform3f(splatUni.color, config.COLOR.r * colorScale, config.COLOR.g * colorScale, config.COLOR.b * colorScale);
         gl.uniform2f(splatUni.point, x, y);
         gl.uniform1f(splatUni.radius, config.SPLAT_RADIUS / 10.0);
         gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
@@ -539,6 +541,7 @@
 
     let lastX = 0, lastY = 0;
     let hasMoved = false;
+    let trailPoints = [];
 
     window.addEventListener('mousemove', e => {
         if (!hasMoved) {
@@ -548,17 +551,29 @@
             return;
         }
 
-        const x = e.clientX / canvas.width;
-        const y = 1.0 - e.clientY / canvas.height;
-        const dx = (e.clientX - lastX) * config.SPLAT_FORCE / canvas.width;
-        const dy = -(e.clientY - lastY) * config.SPLAT_FORCE / canvas.height;
-
-        if (Math.abs(dx) > 0.1 || Math.abs(dy) > 0.1) {
-            splat(x, y, dx * 0.3, dy * 0.3);
+        const currX = e.clientX;
+        const currY = e.clientY;
+        
+        // Interpolate between last and current position for smooth trail
+        const steps = 3;
+        for (let i = 0; i < steps; i++) {
+            const t = (i + 1) / steps;
+            const x = (lastX + (currX - lastX) * t) / canvas.width;
+            const y = 1.0 - (lastY + (currY - lastY) * t) / canvas.height;
+            
+            // Head is strongest, tail fades
+            const intensity = 1.0 - (i / steps) * 0.6; // 1.0 at head, 0.4 at tail
+            
+            const dx = (currX - lastX) * config.SPLAT_FORCE / canvas.width * 0.5;
+            const dy = -(currY - lastY) * config.SPLAT_FORCE / canvas.height * 0.5;
+            
+            if (Math.abs(dx) > 0.05 || Math.abs(dy) > 0.05) {
+                splat(x, y, dx * intensity, dy * intensity, intensity);
+            }
         }
 
-        lastX = e.clientX;
-        lastY = e.clientY;
+        lastX = currX;
+        lastY = currY;
     }, { passive: true });
 
     // ==================== RENDER LOOP ====================
