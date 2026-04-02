@@ -221,25 +221,24 @@ function initContactForm() {
     const form = document.getElementById('contact-form');
     if (!form) return;
 
+    const action = form.getAttribute('action');
     const btn = form.querySelector('button[type="submit"]');
     const statusDiv = document.getElementById('form-status');
-    const action = form.getAttribute('action');
 
-    // If using mailto, let browser handle it naturally
+    // If using mailto, let browser handle it naturally - DO NOT add any JS handlers
     if (action && action.startsWith('mailto:')) {
+        // Show a brief message when form submits
         form.addEventListener('submit', () => {
             if (statusDiv) {
                 statusDiv.textContent = 'Opening your email client...';
                 statusDiv.className = 'form-status success visible';
             }
-            setTimeout(() => {
-                if (statusDiv) statusDiv.classList.remove('visible');
-            }, 3000);
         });
+        // Return early - let the browser handle the mailto
         return;
     }
 
-    // Formspree handling
+    // Formspree handling for non-mailto forms
     const originalText = btn ? btn.textContent : 'Send Message';
 
     form.addEventListener('submit', async (e) => {
