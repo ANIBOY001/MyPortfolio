@@ -42,8 +42,8 @@
         CURL: 25,                      // Medium curl - wide smooth vortices
         SPLAT_RADIUS: 0.15,            // A little smaller
         SPLAT_FORCE: 4500,
-        COLOR: { r: 0.45, g: 0.45, b: 0.48 },  // Gray-black
-        EDGE_COLOR: { r: 0.35, g: 0.35, b: 0.4 }, // Darker edge
+        COLOR: { r: 0.35, g: 0.35, b: 0.38 },  // Darker gray-black
+        EDGE_COLOR: { r: 0.25, g: 0.25, b: 0.3 }, // Darker edge
         IDLE_MOTION: true,             // Continuous subtle background motion
         COLOR_SHIFT_SPEED: 0.02        // HSV dynamic color shifting
     };
@@ -145,15 +145,8 @@
             vec2 force = 0.5 * vec2(abs(T) - abs(B), abs(R) - abs(L));
             force = normalize(force + 0.00001) * curl * C;
             force.y *= -1.0;
-            
             vec2 vel = texture2D(uVelocity, vUv).xy;
-            float speed = length(vel);
-            
-            // Mushroom effect: swirl outward at front, trail back
-            vec2 mushroomForce = normalize(vel + 0.001) * C * 0.5;
-            vel += force * dt + mushroomForce * dt * (1.0 + speed * 2.0);
-            
-            gl_FragColor = vec4(vel, 0.0, 1.0);
+            gl_FragColor = vec4(vel + force * dt, 0.0, 1.0);
         }
     `;
 
@@ -265,10 +258,10 @@
             // Desaturate for premium feel (30% desaturation)
             finalColor = desaturate(finalColor, 0.3);
             
-            // More glow - brighter and wider
-            float glow = exp(-density * 1.8) * 2.0;
-            float waveGlow = density * 0.9;
-            finalColor += color * (glow + waveGlow) * 2.2;
+            // Much more glow
+            float glow = exp(-density * 1.5) * 3.0;
+            float waveGlow = density * 1.2;
+            finalColor += color * (glow + waveGlow) * 3.0;
             
             // Very low opacity - more dense but no fog (0.03 - 0.12 range)
             float alpha = density * 0.06;
