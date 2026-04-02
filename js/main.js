@@ -237,13 +237,16 @@ function initContactForm() {
         }
 
         try {
+            const formData = new FormData(form);
             const response = await fetch(form.action, {
                 method: 'POST',
-                body: new FormData(form),
+                body: formData,
                 headers: {
                     'Accept': 'application/json'
                 }
             });
+
+            const data = await response.json().catch(() => null);
 
             if (response.ok) {
                 if (statusDiv) {
@@ -252,11 +255,13 @@ function initContactForm() {
                 }
                 form.reset();
             } else {
-                throw new Error('Failed to send');
+                console.error('Formspree error:', response.status, data);
+                throw new Error(data?.error || `Failed to send (${response.status})`);
             }
         } catch (error) {
+            console.error('Form submission error:', error);
             if (statusDiv) {
-                statusDiv.textContent = 'Failed to send. Please try again or email me directly.';
+                statusDiv.textContent = 'Failed to send. Please try again or email me directly at Sheikhmohammad7878@gmail.com';
                 statusDiv.className = 'form-status error visible';
             }
         } finally {
@@ -267,7 +272,7 @@ function initContactForm() {
 
             setTimeout(() => {
                 if (statusDiv) statusDiv.classList.remove('visible');
-            }, 5000);
+            }, 8000);
         }
     });
 }
