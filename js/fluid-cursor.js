@@ -31,19 +31,21 @@
     const texType = useHalfFloat ? ext.HALF_FLOAT_OES : gl.UNSIGNED_BYTE;
     const filtering = linearExt ? gl.LINEAR : gl.NEAREST;
 
-    // Configuration - Premium Liquid Atmosphere
+    // Configuration - EXACT specs from guideline
     const config = {
         SIM_RESOLUTION: 128,
         DYE_RESOLUTION: 512,
-        DENSITY_DISSIPATION: 0.975,    // High dissipation - fade fast
-        VELOCITY_DISSIPATION: 0.97,    // Slow cinematic speed
+        DENSITY_DISSIPATION: 0.97,     // Fast fade - no build-up
+        VELOCITY_DISSIPATION: 0.985,   // Slow cinematic speed
         PRESSURE: 0.8,
         PRESSURE_ITERATIONS: 20,
-        CURL: 12,                      // Medium-low curl - smooth, not chaotic
-        SPLAT_RADIUS: 0.12,            // Even smaller
-        SPLAT_FORCE: 1500,             // Slow, smooth reaction
-        COLOR: { r: 0.235, g: 0.949, b: 0.89 },  // Muted cyan #3cf2e3 (toned down)
-        EDGE_COLOR: { r: 0.4, g: 0.35, b: 0.55 }  // Slight purple/blue shift
+        CURL: 25,                      // Medium curl - wide smooth vortices
+        SPLAT_RADIUS: 0.28,            // Wide soft interaction
+        SPLAT_FORCE: 4500,             // Medium force - smooth spread
+        COLOR: { r: 0.235, g: 0.949, b: 0.89 },  // Muted cyan
+        EDGE_COLOR: { r: 0.4, g: 0.35, b: 0.55 }, // Slight purple shift
+        IDLE_MOTION: true,             // Continuous subtle background motion
+        COLOR_SHIFT_SPEED: 0.02        // HSV dynamic color shifting
     };
 
     // Resize
@@ -242,8 +244,8 @@
             vec4 c = texture2D(uTexture, vUv);
             float density = (c.r + c.g + c.b) * 0.333;
             
-            // Very low density - airy, thin smoke
-            density *= 0.25;
+            // Low density - thin smoke layers
+            density *= 0.2;
             
             // Add subtle texture
             float smoke = fbm(vUv * 2.0 + c.xy * 1.5) * 0.2 + 0.8;
@@ -256,18 +258,14 @@
             // Desaturate for premium feel (30% desaturation)
             finalColor = desaturate(finalColor, 0.3);
             
-            // Boost brightness for visibility
-            finalColor *= 1.2;
+            // Soft edge glow - glowing gas, not neon light
+            float glow = exp(-density * 4.0) * 0.5;
+            finalColor += color * glow * 0.6;
             
-            // Bright glow at edges and center
-            float glow = exp(-density * 3.0) * 0.8;
-            float centerGlow = density * 0.5;
-            finalColor += color * (glow + centerGlow) * 1.5;
-            
-            // Very low opacity - only fluid glows, not fog (0.03 - 0.12 range)
-            float alpha = density * 0.06;
-            alpha = clamp(alpha, 0.0, 0.12);
-            alpha += glow * 0.04;
+            // Alpha based on brightness - smoky appearance
+            float alpha = density * 0.08;
+            alpha = clamp(alpha, 0.0, 0.15);
+            alpha += glow * 0.03;
             
             gl_FragColor = vec4(finalColor, alpha);
         }
@@ -594,11 +592,37 @@
     // ==================== RENDER LOOP ====================
 
     let lastTime = Date.now();
+    let idleTime = 0;
+    let hueShift = 0;
 
     function update() {
         const now = Date.now();
         const dt = Math.min((now - lastTime) / 1000, 0.016);
         lastTime = now;
+        
+        // Idle system - continuous subtle background motion
+        if (config.IDLE_MOTION) {
+            idleTime += dt;
+            // Small random forces to keep fluid alive
+            if (Math.random() < 0.05) {
+                const idleX = 0.2 + Math.random() * 0.6;
+                const idleY = 0.2 + Math.random() * 0.6;
+                const idleForce = 200 + Math.random() * 300;
+                splat(idleX, idleY, 
+                    (Math.random() - 0.5) * idleForce / canvas.width,
+                    (Math.random() - 0.5) * idleForce / canvas.height,
+                    0.15 // Very subtle
+                );
+            }
+        }
+        
+        // Dynamic HSV color shifting
+        hueShift += config.COLOR_SHIFT_SPEED * dt;
+        const shiftedColor = {
+            r: config.COLOR.r + Math.sin(hueShift) * 0.02,
+            g: config.COLOR.g + Math.cos(hueShift * 0.7) * 0.015,
+            b: config.COLOR.b + Math.sin(hueShift * 1.3) * 0.025
+        };
 
         step(dt);
 
@@ -612,7 +636,7 @@
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, density.read.texture);
         gl.uniform1i(displayUni.uTexture, 0);
-        gl.uniform3f(displayUni.color, config.COLOR.r, config.COLOR.g, config.COLOR.b);
+        gl.uniform3f(displayUni.color, shiftedColor.r, shiftedColor.g, shiftedColor.b);
         gl.uniform3f(displayUni.edgeColor, config.EDGE_COLOR.r, config.EDGE_COLOR.g, config.EDGE_COLOR.b);
         gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
 
