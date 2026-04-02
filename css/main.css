@@ -1060,6 +1060,7 @@ body:hover .cursor-glow {
     
     .services-grid {
         grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
     }
     
     .testimonials-grid {
@@ -1318,20 +1319,21 @@ body:hover .cursor-glow {
     /* Services */
     .services-grid {
         grid-template-columns: 1fr;
-        gap: 20px;
+        gap: 16px;
     }
     
     .service-card {
-        padding: 28px 20px;
+        padding: 24px 20px;
     }
     
     .service-icon {
         width: 48px;
         height: 48px;
+        margin-bottom: 16px;
     }
     
     .service-title {
-        font-size: 20px;
+        font-size: 18px;
     }
     
     /* Testimonials */
@@ -1827,16 +1829,16 @@ body:hover .cursor-glow {
 
 .service-title {
     font-family: var(--font-heading);
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 600;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
 }
 
 .service-desc {
-    font-size: 15px;
+    font-size: 14px;
     color: var(--text-secondary);
-    margin-bottom: 20px;
-    line-height: 1.6;
+    margin-bottom: 16px;
+    line-height: 1.5;
 }
 
 .service-features {
@@ -1845,10 +1847,10 @@ body:hover .cursor-glow {
 }
 
 .service-features li {
-    font-size: 14px;
+    font-size: 13px;
     color: var(--text-muted);
-    padding: 8px 0;
-    padding-left: 20px;
+    padding: 6px 0;
+    padding-left: 18px;
     position: relative;
 }
 
@@ -1858,8 +1860,8 @@ body:hover .cursor-glow {
     left: 0;
     top: 50%;
     transform: translateY(-50%);
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
     background: var(--accent);
     border-radius: 50%;
 }
@@ -2254,7 +2256,7 @@ body:hover .cursor-glow {
     }
     
     .service-card {
-        padding: 28px;
+        padding: 24px;
     }
 }
 
@@ -2627,6 +2629,44 @@ body:hover .cursor-glow {
 /* Services Section - Dark Metallic */
 .services {
     position: relative;
+    padding: 80px 0;
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.service-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    transition: all var(--transition-base);
+}
+
+.service-card:hover {
+    border-color: var(--border-glow);
+    transform: translateY(-4px);
+}
+
+.service-icon {
+    width: 56px;
+    height: 56px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    color: var(--accent);
+}
+
+.service-icon svg {
+    width: 28px;
+    height: 28px;
 }
 
 .services-bg {
@@ -3461,6 +3501,7 @@ section.reveal-section.active {
     
     .services-grid {
         grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
     }
     
     .testimonials-grid {
@@ -3719,20 +3760,21 @@ section.reveal-section.active {
     /* Services */
     .services-grid {
         grid-template-columns: 1fr;
-        gap: 20px;
+        gap: 16px;
     }
     
     .service-card {
-        padding: 28px 20px;
+        padding: 24px 20px;
     }
     
     .service-icon {
         width: 48px;
         height: 48px;
+        margin-bottom: 16px;
     }
     
     .service-title {
-        font-size: 20px;
+        font-size: 18px;
     }
     
     /* Testimonials */
