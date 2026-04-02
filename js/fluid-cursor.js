@@ -243,7 +243,7 @@
             float density = (c.r + c.g + c.b) * 0.333;
             
             // Very low density - airy, thin smoke
-            density *= 0.15;
+            density *= 0.25;
             
             // Add subtle texture
             float smoke = fbm(vUv * 2.0 + c.xy * 1.5) * 0.2 + 0.8;
@@ -253,22 +253,20 @@
             float edge = smoothstep(0.1, 0.5, density);
             vec3 finalColor = mix(edgeColor, color, edge);
             
-            // Desaturate for premium feel (40% desaturation)
-            finalColor = desaturate(finalColor, 0.4);
+            // Desaturate for premium feel (30% desaturation)
+            finalColor = desaturate(finalColor, 0.3);
             
-            // Tone down brightness
-            finalColor *= 0.7;
+            // Boost brightness for visibility
+            finalColor *= 1.2;
             
-            // Soft additive glow at edges (felt, not seen)
-            float glow = exp(-density * 6.0) * 0.25;
-            finalColor += edgeColor * glow * 0.5;
+            // Soft glow at edges
+            float glow = exp(-density * 5.0) * 0.3;
+            finalColor += edgeColor * glow * 0.4;
             
-            // Very low opacity - critical for premium look (0.03 - 0.12 range)
-            float alpha = density * 0.08;
-            alpha = clamp(alpha, 0.0, 0.12);
-            
-            // Additional glow contribution to alpha
-            alpha += glow * 0.03;
+            // Low opacity but visible (0.05 - 0.25 range)
+            float alpha = density * 0.15;
+            alpha = clamp(alpha, 0.0, 0.25);
+            alpha += glow * 0.05;
             
             gl_FragColor = vec4(finalColor, alpha);
         }
@@ -606,9 +604,9 @@
         // Display - Premium liquid atmosphere
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
         gl.viewport(0, 0, canvas.width, canvas.height);
-        // Additive blend for soft glow effect
+        // Standard blend for visibility with low density
         gl.enable(gl.BLEND);
-        gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         bind(displayProgram);
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, density.read.texture);
