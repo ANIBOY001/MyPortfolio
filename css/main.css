@@ -2144,7 +2144,6 @@ section {
 }
 
 section.reveal-section {
-    opacity: 0;
     transform: translateY(50px);
     transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -2156,7 +2155,6 @@ section.reveal-section.active {
 
 /* Fancy Card Entrance Animations */
 .project-card {
-    opacity: 0;
     transform: translateY(60px) rotateX(10deg);
     transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -2167,7 +2165,6 @@ section.reveal-section.active {
 }
 
 .service-card {
-    opacity: 0;
     transform: scale(0.8) translateY(40px);
     transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -2178,7 +2175,6 @@ section.reveal-section.active {
 }
 
 .testimonial-card {
-    opacity: 0;
     transform: translateX(-50px) rotateY(-15deg);
     transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -2189,7 +2185,6 @@ section.reveal-section.active {
 }
 
 .blog-card {
-    opacity: 0;
     transform: translateY(40px) scale(0.95);
     transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -2314,7 +2309,6 @@ section.reveal-section.active {
 
 /* Timeline Item Animations */
 .timeline-item {
-    opacity: 0;
     transform: translateX(-30px);
     transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -2330,7 +2324,6 @@ section.reveal-section.active {
 
 /* Skill Tag Animations */
 .skill-tag {
-    opacity: 0;
     transform: scale(0.5);
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -2346,7 +2339,6 @@ section.reveal-section.active {
 
 /* Stat Item Animations */
 .stat-item {
-    opacity: 0;
     transform: scale(0.8) translateY(20px);
     transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -2515,7 +2507,6 @@ section.reveal-section.active {
 
 /* Staggered Reveal Animation Classes */
 .reveal-up {
-    opacity: 0;
     transform: translateY(40px);
     transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -2526,7 +2517,6 @@ section.reveal-section.active {
 }
 
 .reveal-left {
-    opacity: 0;
     transform: translateX(-50px);
     transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -2537,7 +2527,6 @@ section.reveal-section.active {
 }
 
 .reveal-right {
-    opacity: 0;
     transform: translateX(50px);
     transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -2548,7 +2537,6 @@ section.reveal-section.active {
 }
 
 .reveal-scale {
-    opacity: 0;
     transform: scale(0.7);
     transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -2559,7 +2547,6 @@ section.reveal-section.active {
 }
 
 .reveal-rotate {
-    opacity: 0;
     transform: rotateY(-30deg);
     transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
