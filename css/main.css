@@ -179,7 +179,7 @@ body:hover .cursor-glow {
 .nav-links a {
     color: var(--text-secondary);
     text-decoration: none;
-    font-size: 22px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
+    font-size: 18px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
     font-weight: 500;
     transition: all var(--transition-fast);
     position: relative;
@@ -243,7 +243,7 @@ body:hover .cursor-glow {
     gap: 8px;
     padding: 14px 28px;
     font-family: var(--font-body);
-    font-size: 22px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
+    font-size: 18px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
     font-weight: 600;
     border-radius: var(--radius-md);
     border: none;
@@ -291,7 +291,7 @@ body:hover .cursor-glow {
 /* Section Title */
 .section-title {
     font-family: var(--font-heading);
-    font-size: 42px;
+    font-size: 32px; word-break: break-word; max-width: 100%;
     font-weight: 700;
     margin-bottom: 60px;
     text-align: center;
@@ -492,7 +492,7 @@ body:hover .cursor-glow {
 }
 
 .stat-label {
-    font-size: 22px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
+    font-size: 18px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
     color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -688,7 +688,7 @@ body:hover .cursor-glow {
 .code-content {
     padding: 24px;
     font-family: 'Monaco', 'Menlo', monospace;
-    font-size: 22px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
+    font-size: 18px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
     line-height: 1.6;
     overflow-x: auto;
 }
@@ -764,7 +764,7 @@ body:hover .cursor-glow {
 }
 
 .timeline-desc {
-    font-size: 22px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
+    font-size: 18px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
     color: var(--text-muted);
     line-height: 1.6;
 }
@@ -825,7 +825,7 @@ body:hover .cursor-glow {
     margin-top: 16px;
     padding: 12px 16px;
     border-radius: var(--radius-md);
-    font-size: 22px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
+    font-size: 18px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
     font-weight: 500;
     text-align: center;
     opacity: 0;
@@ -954,7 +954,7 @@ body:hover .cursor-glow {
 }
 
 .footer-copy {
-    font-size: 22px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
+    font-size: 18px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
     color: var(--text-muted);
 }
 
@@ -1186,11 +1186,11 @@ body:hover .cursor-glow {
     }
     
     .hero-greeting {
-        font-size: 22px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
+        font-size: 18px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
     }
     
     .hero-title {
-        font-size: 42px; line-height: 1.1; color: #c0c0c0; text-shadow: 3px 3px 0px rgba(100,100,100,0.9), 6px 6px 0px rgba(80,80,80,0.7), 9px 9px 0px rgba(60,60,60,0.5);
+        font-size: 32px; word-break: break-word; max-width: 100%; line-height: 1.1; color: #c0c0c0; text-shadow: 3px 3px 0px rgba(100,100,100,0.9), 6px 6px 0px rgba(80,80,80,0.7), 9px 9px 0px rgba(60,60,60,0.5);
     }
     
     .hero-subtitle {
@@ -1269,7 +1269,7 @@ body:hover .cursor-glow {
     }
     
     .skill-tag {
-        font-size: 22px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
+        font-size: 18px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
         padding: 10px 16px;
     }
     
@@ -1332,11 +1332,11 @@ body:hover .cursor-glow {
     }
     
     .timeline-company {
-        font-size: 22px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
+        font-size: 18px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
     }
     
     .timeline-desc {
-        font-size: 22px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
+        font-size: 18px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
     }
     
     /* Services */
@@ -1605,7 +1605,7 @@ body:hover .cursor-glow {
     }
     
     .hero-subtitle {
-        font-size: 22px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
+        font-size: 18px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
     }
     
     .section-title {
@@ -1650,11 +1650,11 @@ body:hover .cursor-glow {
     }
     
     .service-desc {
-        font-size: 22px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
+        font-size: 18px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
     }
     
     .testimonial-text {
-        font-size: 22px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
+        font-size: 18px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
     }
     
     .blog-title {
@@ -1688,7 +1688,7 @@ body:hover .cursor-glow {
     }
     
     .btn {
-        font-size: 22px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
+        font-size: 18px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
     }
 }
 
@@ -1864,7 +1864,7 @@ body:hover .cursor-glow {
 }
 
 .service-desc {
-    font-size: 22px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
+    font-size: 18px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
     color: var(--text-secondary);
     margin-bottom: 16px;
     line-height: 1.5;
@@ -1975,7 +1975,7 @@ body:hover .cursor-glow {
 }
 
 .author-info span {
-    font-size: 22px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
+    font-size: 18px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
     color: var(--text-muted);
 }
 
@@ -2028,7 +2028,7 @@ body:hover .cursor-glow {
 }
 
 .stat-label-large {
-    font-size: 22px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
+    font-size: 18px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
     color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 2px;
@@ -2133,7 +2133,7 @@ body:hover .cursor-glow {
 }
 
 .blog-link {
-    font-size: 22px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
+    font-size: 18px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
     font-weight: 600;
     color: var(--accent);
     text-decoration: none;
@@ -2213,7 +2213,7 @@ body:hover .cursor-glow {
 }
 
 .step-desc {
-    font-size: 22px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
+    font-size: 18px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
     color: var(--text-secondary);
     line-height: 1.6;
 }
@@ -2400,13 +2400,13 @@ body:hover .cursor-glow {
 }
 
 .progress-name {
-    font-size: 22px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
+    font-size: 18px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
     font-weight: 500;
     color: var(--text-secondary);
 }
 
 .progress-value {
-    font-size: 22px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
+    font-size: 18px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
     font-weight: 600;
     color: var(--accent);
 }
@@ -3303,7 +3303,7 @@ section.reveal-section.active {
     }
     
     .nav-links a {
-        font-size: 22px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
+        font-size: 18px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
         padding: 6px 12px;
     }
     
@@ -3393,7 +3393,7 @@ section.reveal-section.active {
     }
     
     .hero-subtitle {
-        font-size: 22px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
+        font-size: 18px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
     }
     
     .section-title {
@@ -3638,11 +3638,11 @@ section.reveal-section.active {
     }
     
     .hero-greeting {
-        font-size: 22px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
+        font-size: 18px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
     }
     
     .hero-title {
-        font-size: 42px; line-height: 1.1; color: #c0c0c0; text-shadow: 3px 3px 0px rgba(100,100,100,0.9), 6px 6px 0px rgba(80,80,80,0.7), 9px 9px 0px rgba(60,60,60,0.5);
+        font-size: 32px; word-break: break-word; max-width: 100%; line-height: 1.1; color: #c0c0c0; text-shadow: 3px 3px 0px rgba(100,100,100,0.9), 6px 6px 0px rgba(80,80,80,0.7), 9px 9px 0px rgba(60,60,60,0.5);
     }
     
     .hero-subtitle {
@@ -3721,7 +3721,7 @@ section.reveal-section.active {
     }
     
     .skill-tag {
-        font-size: 22px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
+        font-size: 18px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
         padding: 10px 16px;
     }
     
@@ -3784,11 +3784,11 @@ section.reveal-section.active {
     }
     
     .timeline-company {
-        font-size: 22px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
+        font-size: 18px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
     }
     
     .timeline-desc {
-        font-size: 22px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
+        font-size: 18px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
     }
     
     /* Services */
@@ -4057,7 +4057,7 @@ section.reveal-section.active {
     }
     
     .hero-subtitle {
-        font-size: 22px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
+        font-size: 18px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
     }
     
     .section-title {
@@ -4102,11 +4102,11 @@ section.reveal-section.active {
     }
     
     .service-desc {
-        font-size: 22px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
+        font-size: 18px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
     }
     
     .testimonial-text {
-        font-size: 22px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
+        font-size: 18px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
     }
     
     .blog-title {
@@ -4140,7 +4140,7 @@ section.reveal-section.active {
     }
     
     .btn {
-        font-size: 22px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
+        font-size: 18px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
     }
 }
 
