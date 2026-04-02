@@ -345,7 +345,7 @@ body:hover .cursor-glow {
     left: 0;
     right: 0;
     bottom: 0;
-    background: url('https://images.expothemes.com/the-batman/images/the-batman-windows-theme-15-hd.jpg') center/cover no-repeat;
+    background: url('images/hero-bg.jpg') center/cover no-repeat;
     opacity: 0.6;
     z-index: 0;
     animation: heroBgPulse 8s ease-in-out infinite;
