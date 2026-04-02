@@ -17,10 +17,7 @@
         preserveDrawingBuffer: false
     });
     
-    if (!gl) {
-        console.log('WebGL not supported');
-        return;
-    }
+    if (!gl) return;
 
     // Check for float texture support
     const ext = gl.getExtension('OES_texture_half_float');
@@ -673,6 +670,6 @@
         requestAnimationFrame(update);
     }
 
-    console.log('WebGL Fluid Smoke initialized - format:', useHalfFloat ? 'half-float' : 'rgba8');
+    console.log('Fluid cursor initialized');
     update();
 })();
