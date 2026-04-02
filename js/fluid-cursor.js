@@ -1,6 +1,6 @@
 /**
- * WebGL Fluid Smoke - Compatible Version
- * Uses standard RGBA8 format for maximum compatibility
+ * Ambient Fluid Field - Passive Disturbance System
+ * User disturbs the field, doesn't control it directly
  */
 
 (function() {
@@ -11,38 +11,30 @@
     const canvas = document.getElementById('fluid-cursor');
     if (!canvas) return;
 
-    const gl = canvas.getContext('webgl', {
-        alpha: true,
-        antialias: false,
-        preserveDrawingBuffer: false
-    });
-    
+    const gl = canvas.getContext('webgl', { alpha: true, antialias: false, preserveDrawingBuffer: false });
     if (!gl) return;
 
-    // Check for float texture support
     const ext = gl.getExtension('OES_texture_half_float');
     const linearExt = gl.getExtension('OES_texture_half_float_linear');
-    
-    // Use half-float if available, otherwise fallback to unsigned byte
-    const useHalfFloat = !!ext;
-    const texType = useHalfFloat ? ext.HALF_FLOAT_OES : gl.UNSIGNED_BYTE;
+    const texType = ext ? ext.HALF_FLOAT_OES : gl.UNSIGNED_BYTE;
     const filtering = linearExt ? gl.LINEAR : gl.NEAREST;
 
-    // Configuration - EXACT specs from guideline
+    // PREMIUM AMBIENT SYSTEM - Client Feedback Implementation
     const config = {
         SIM_RESOLUTION: 128,
-        DYE_RESOLUTION: 512,
-        DENSITY_DISSIPATION: 0.97,   // Back to 0.97 - trailing OK
-        VELOCITY_DISSIPATION: 0.985,   // Slow cinematic speed
+        DYE_RESOLUTION: 256,           // Lower for softer look
+        DENSITY_DISSIPATION: 0.90,     // FAST fade (0.3-0.8s)
+        VELOCITY_DISSIPATION: 0.96,    // Slow cinematic
         PRESSURE: 0.8,
         PRESSURE_ITERATIONS: 20,
-        CURL: 25,                      // Medium curl - wide smooth vortices
-        SPLAT_RADIUS: 0.15,            // Bigger fluid
-        SPLAT_FORCE: 4500,
-        COLOR: { r: 0.04, g: 0.04, b: 0.04 },  // Pure black-gray (no green/blue tint)
-        EDGE_COLOR: { r: 0.02, g: 0.02, b: 0.02 }, // Pure pitch black edge
-        IDLE_MOTION: true,             // Continuous subtle background motion
-        COLOR_SHIFT_SPEED: 0.02        // HSV dynamic color shifting
+        CURL: 12,                      // Gentler
+        SPLAT_RADIUS: 0.06,            // Smaller disturbance
+        SPLAT_FORCE: 600,              // MUCH weaker (was 4500)
+        COLOR: { r: 0.025, g: 0.025, b: 0.025 },  // Near black, 60% less visible
+        OPACITY_SCALE: 0.02,           // 60% opacity reduction
+        BLUR_AMOUNT: 3.0,              // More diffusion
+        IDLE_STRENGTH: 0.06,           // Subtle idle
+        SMOOTHING: 0.06                // Cursor lag (easing)
     };
 
     // Resize
@@ -85,25 +77,7 @@
         
         void main() {
             vec2 coord = vUv - dt * texture2D(uVelocity, vUv).xy * texelSize;
-            vec4 result = dissipation * texture2D(uSource, coord);
-            
-            // Swirl effect when fading (based on dissipation)
-            float fadeAmount = 1.0 - dissipation;
-            if (fadeAmount > 0.01) {
-                vec2 center = vec2(0.5, 0.5);
-                vec2 toCenter = vUv - center;
-                float angle = fadeAmount * 2.0 * dt;
-                float s = sin(angle);
-                float c = cos(angle);
-                vec2 rotated = vec2(
-                    toCenter.x * c - toCenter.y * s,
-                    toCenter.x * s + toCenter.y * c
-                );
-                vec2 swirlCoord = center + rotated * 0.98;
-                result += fadeAmount * 0.3 * texture2D(uSource, swirlCoord);
-            }
-            
-            gl_FragColor = result;
+            gl_FragColor = dissipation * texture2D(uSource, coord);
         }
     `;
 
@@ -121,7 +95,8 @@
             p.x *= aspectRatio;
             float strength = exp(-dot(p, p) / radius);
             vec3 base = texture2D(uTarget, vUv).xyz;
-            gl_FragColor = vec4(base + strength * color, 1.0);
+            // Much weaker splat - user disturbs, doesn't control
+            gl_FragColor = vec4(base + strength * color * 0.2, 1.0);
         }
     `;
 
@@ -216,83 +191,47 @@
         }
     `;
 
-    // Display shader - Premium Liquid Atmosphere
-    // Very low density, soft additive glow, desaturated muted cyan
+    // Display shader - SOFT AMBIENT DIFFUSION
     const displayShader = `
         precision highp float;
         varying vec2 vUv;
         uniform sampler2D uTexture;
         uniform vec3 color;
-        uniform vec3 edgeColor;
+        uniform float blurAmount;
         
-        // Desaturate function
-        vec3 desaturate(vec3 c, float amount) {
-            float gray = dot(c, vec3(0.299, 0.587, 0.114));
-            return mix(c, vec3(gray), amount);
-        }
-        
-        float hash(vec2 p) {
-            return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
-        }
-        
-        float noise(vec2 p) {
-            vec2 i = floor(p);
-            vec2 f = fract(p);
-            f = f * f * (3.0 - 2.0 * f);
-            return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x),
-                       mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), f.x), f.y);
-        }
-        
-        float fbm(vec2 p) {
-            float v = 0.0;
-            float a = 0.5;
-            for (int i = 0; i < 4; i++) {
-                v += a * noise(p);
-                p *= 2.0;
-                a *= 0.5;
+        // Soft blur sampling for diffusion
+        vec4 sampleBlur(sampler2D tex, vec2 uv, float radius) {
+            vec4 sum = vec4(0.0);
+            float count = 0.0;
+            for (float x = -2.0; x <= 2.0; x += 1.0) {
+                for (float y = -2.0; y <= 2.0; y += 1.0) {
+                    vec2 offset = vec2(x, y) * radius * 0.002;
+                    sum += texture2D(tex, uv + offset);
+                    count += 1.0;
+                }
             }
-            return v;
+            return sum / count;
         }
         
         void main() {
-            vec4 c = texture2D(uTexture, vUv);
+            // Sample with blur for soft diffusion
+            vec4 c = sampleBlur(uTexture, vUv, blurAmount);
             float density = (c.r + c.g + c.b) * 0.333;
             
-            // Sample neighbors for edge detection
-            float L = texture2D(uTexture, vUv - vec2(0.01, 0.0)).x;
-            float R = texture2D(uTexture, vUv + vec2(0.01, 0.0)).x;
-            float T = texture2D(uTexture, vUv + vec2(0.0, 0.01)).x;
-            float B = texture2D(uTexture, vUv - vec2(0.0, 0.01)).x;
-            float neighborAvg = (L + R + T + B) * 0.25 * 0.333;
+            // Ultra low density - barely visible (60% less)
+            density *= 0.06;
             
-            // Low density - thin smoke layers
-            density *= 0.2;
+            // Soft falloff - no sharp edges
+            float edge = smoothstep(0.0, 0.4, density);
+            vec3 finalColor = mix(vec3(0.0), color, edge);
             
-            // Add subtle texture
-            float smoke = fbm(vUv * 2.0 + c.xy * 1.5) * 0.2 + 0.8;
-            density *= smoke;
+            // Minimal glow - ambient only
+            float glow = exp(-density * 4.0) * 1.2;
+            finalColor += color * glow * 0.3;
             
-            // Edge blend for purple/blue shift
-            float edge = smoothstep(0.1, 0.5, density);
-            vec3 finalColor = mix(edgeColor, color, edge);
-            
-            // Desaturate for premium feel (30% desaturation)
-            finalColor = desaturate(finalColor, 0.3);
-            
-            // Maximum glow
-            float glow = exp(-density * 1.2) * 5.5;
-            float waveGlow = density * 1.8;
-            finalColor += color * (glow + waveGlow) * 5.5;
-            
-            // Front edges pitch black - where density is high but neighbors are lower (front of wave)
-            float densityGradient = density - neighborAvg * 0.2;
-            float isFrontEdge = smoothstep(0.02, 0.08, densityGradient) * smoothstep(0.15, 0.05, density);
-            finalColor = mix(finalColor, vec3(0.0, 0.0, 0.0), isFrontEdge * 0.85);
-            
-            // Very low opacity - more dense but no fog (0.03 - 0.12 range)
-            float alpha = density * 0.06;
-            alpha = clamp(alpha, 0.0, 0.12);
-            alpha += glow * 0.02;
+            // Ultra low opacity - should barely notice it
+            float alpha = density * 0.02;
+            alpha = clamp(alpha, 0.0, 0.035);
             
             gl_FragColor = vec4(finalColor, alpha);
         }
@@ -404,7 +343,7 @@
     const pressureUni = getUniforms(pressureProgram);
     const gradientSubtractUni = getUniforms(gradientSubtractProgram);
     const displayUni = getUniforms(displayProgram);
-    displayUni.edgeColor = gl.getUniformLocation(displayProgram, 'edgeColor');
+    displayUni.blurAmount = gl.getUniformLocation(displayProgram, 'blurAmount');
 
     // ==================== RENDER SETUP ====================
 
@@ -428,7 +367,7 @@
     // ==================== SIMULATION ====================
 
     function splat(x, y, dx, dy, intensity = 1.0) {
-        const colorScale = intensity * 1.5;
+        const colorScale = intensity * 0.3;  // Much weaker
         
         gl.bindFramebuffer(gl.FRAMEBUFFER, density.write.fbo);
         gl.viewport(0, 0, density.write.width, density.write.height);
@@ -449,7 +388,7 @@
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, velocity.read.texture);
         gl.uniform1i(splatUni.uTarget, 0);
-        gl.uniform3f(splatUni.color, dx, dy, 0.0);
+        gl.uniform3f(splatUni.color, dx * 0.2, dy * 0.2, 0.0);  // Much weaker velocity
         gl.uniform1f(splatUni.radius, config.SPLAT_RADIUS / 10.0);
         gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
         velocity.swap();
@@ -569,95 +508,71 @@
         density.swap();
     }
 
-    // ==================== INPUT ====================
+    // ==================== INPUT - SMOOTHED CURSOR ====================
 
-    let lastX = 0, lastY = 0;
+    // Smoothed cursor follows mouse with lag (easing)
+    let cursorX = 0, cursorY = 0;
+    let targetX = 0, targetY = 0;
     let hasMoved = false;
-    let trailPoints = [];
+    let idlePhase = 0;
 
     window.addEventListener('mousemove', e => {
+        targetX = e.clientX / canvas.width;
+        targetY = 1.0 - (e.clientY / canvas.height);
         if (!hasMoved) {
-            lastX = e.clientX;
-            lastY = e.clientY;
+            cursorX = targetX;
+            cursorY = targetY;
             hasMoved = true;
-            return;
         }
-
-        const currX = e.clientX;
-        const currY = e.clientY;
-        
-        // Interpolate between last and current position for smooth trail
-        const steps = 3;
-        for (let i = 0; i < steps; i++) {
-            const t = (i + 1) / steps;
-            const x = (lastX + (currX - lastX) * t) / canvas.width;
-            const y = 1.0 - (lastY + (currY - lastY) * t) / canvas.height;
-            
-            // Head is strongest, tail fades
-            const intensity = 1.0 - (i / steps) * 0.6; // 1.0 at head, 0.4 at tail
-            
-            const dx = (currX - lastX) * config.SPLAT_FORCE / canvas.width * 0.5;
-            const dy = -(currY - lastY) * config.SPLAT_FORCE / canvas.height * 0.5;
-            
-            if (Math.abs(dx) > 0.05 || Math.abs(dy) > 0.05) {
-                splat(x, y, dx * intensity, dy * intensity, intensity);
-            }
-        }
-
-        lastX = currX;
-        lastY = currY;
     }, { passive: true });
 
     // ==================== RENDER LOOP ====================
 
     let lastTime = Date.now();
-    let idleTime = 0;
-    let hueShift = 0;
 
     function update() {
         const now = Date.now();
-        const dt = Math.min((now - lastTime) / 1000, 0.016);
+        const dt = Math.min((now - lastTime) / 1000, 0.016) * 0.65;  // 35% slower
         lastTime = now;
         
-        // Idle system - continuous subtle background motion
-        if (config.IDLE_MOTION) {
-            idleTime += dt;
-            // Small random forces to keep fluid alive
-            if (Math.random() < 0.05) {
-                const idleX = 0.2 + Math.random() * 0.6;
-                const idleY = 0.2 + Math.random() * 0.6;
-                const idleForce = 200 + Math.random() * 300;
-                splat(idleX, idleY, 
-                    (Math.random() - 0.5) * idleForce / canvas.width,
-                    (Math.random() - 0.5) * idleForce / canvas.height,
-                    0.15 // Very subtle
-                );
+        // Smooth cursor following (easing) - NOT instant
+        if (hasMoved) {
+            const dx = targetX - cursorX;
+            const dy = targetY - cursorY;
+            cursorX += dx * config.SMOOTHING;
+            cursorY += dy * config.SMOOTHING;
+            
+            // Only disturb if moving enough
+            if (Math.abs(dx) > 0.002 || Math.abs(dy) > 0.002) {
+                splat(cursorX, cursorY, dx * 30, dy * 30, 0.4);
             }
         }
         
-        // Dynamic HSV color shifting - grayscale only (no color tint)
-        hueShift += config.COLOR_SHIFT_SPEED * dt;
-        const shiftAmount = Math.sin(hueShift) * 0.02;
-        const shiftedColor = {
-            r: config.COLOR.r + shiftAmount,
-            g: config.COLOR.g + shiftAmount,
-            b: config.COLOR.b + shiftAmount
-        };
+        // Subtle idle motion - field always alive
+        idlePhase += dt * 0.4;
+        if (Math.random() < 0.02) {
+            const idleX = 0.3 + Math.sin(idlePhase) * 0.25;
+            const idleY = 0.3 + Math.cos(idlePhase * 0.7) * 0.25;
+            splat(idleX, idleY, 
+                Math.sin(idlePhase * 1.5) * 25,
+                Math.cos(idlePhase * 1.2) * 25,
+                config.IDLE_STRENGTH
+            );
+        }
 
         step(dt);
 
-        // Display - Premium liquid atmosphere
+        // Display - soft diffused ambient
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
         gl.viewport(0, 0, canvas.width, canvas.height);
-        // Standard blend for visibility with low density
         gl.enable(gl.BLEND);
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         bind(displayProgram);
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, density.read.texture);
         gl.uniform1i(displayUni.uTexture, 0);
-        gl.uniform3f(displayUni.color, shiftedColor.r, shiftedColor.g, shiftedColor.b);
-        gl.uniform3f(displayUni.edgeColor, config.EDGE_COLOR.r, config.EDGE_COLOR.g, config.EDGE_COLOR.b);
+        gl.uniform3f(displayUni.color, config.COLOR.r, config.COLOR.g, config.COLOR.b);
+        gl.uniform1f(displayUni.blurAmount, config.BLUR_AMOUNT);
         gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
 
         requestAnimationFrame(update);
