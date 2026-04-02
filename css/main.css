@@ -327,7 +327,7 @@ body:hover .cursor-glow {
     right: 0;
     bottom: 0;
     background: url('images/hero-bg.jpg') center/cover no-repeat;
-    opacity: 0.6;
+    opacity: 0.85;
     z-index: 0;
     animation: heroBgPulse 8s ease-in-out infinite;
 }
