@@ -305,20 +305,6 @@ function initSmoothScroll() {
     });
 }
 
-// Nav background on scroll
-function initNavBackground() {
-    window.addEventListener('scroll', () => {
-        const nav = document.querySelector('.nav');
-        if (!nav) return;
-        
-        if (window.scrollY > 50) {
-            nav.classList.add('scrolled');
-        } else {
-            nav.classList.remove('scrolled');
-        }
-    }, { passive: true });
-}
-
 // Typewriter Effect for Hero Title
 function initTypewriter() {
     const title = document.querySelector('.hero-greeting');
