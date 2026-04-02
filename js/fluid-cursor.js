@@ -40,10 +40,10 @@
         PRESSURE: 0.8,
         PRESSURE_ITERATIONS: 20,
         CURL: 25,                      // Medium curl - wide smooth vortices
-        SPLAT_RADIUS: 0.05,            // Smaller orb
+        SPLAT_RADIUS: 0.15,            // Bigger fluid
         SPLAT_FORCE: 4500,
-        COLOR: { r: 0.06, g: 0.06, b: 0.07 },  // Near black - like black water
-        EDGE_COLOR: { r: 0.03, g: 0.03, b: 0.04 }, // Almost pitch black
+        COLOR: { r: 0.04, g: 0.04, b: 0.045 },  // Almost pure black
+        EDGE_COLOR: { r: 0.02, g: 0.02, b: 0.025 }, // Pitch black edge
         IDLE_MOTION: true,             // Continuous subtle background motion
         COLOR_SHIFT_SPEED: 0.02        // HSV dynamic color shifting
     };
