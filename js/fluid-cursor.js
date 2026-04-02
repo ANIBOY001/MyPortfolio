@@ -304,10 +304,7 @@
         const shader = gl.createShader(type);
         gl.shaderSource(shader, source);
         gl.compileShader(shader);
-        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-            console.error('Shader error:', gl.getShaderInfoLog(shader));
-            return null;
-        }
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) return null;
         return shader;
     }
 
@@ -321,10 +318,7 @@
         gl.attachShader(prog, fs);
         gl.linkProgram(prog);
         
-        if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
-            console.error('Link error:', gl.getProgramInfoLog(prog));
-            return null;
-        }
+        if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return null;
         return prog;
     }
 
@@ -351,7 +345,8 @@
             
             const status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
             if (status !== gl.FRAMEBUFFER_COMPLETE) {
-                console.error('FBO incomplete:', status, 'width:', w, 'height:', h, 'type:', type);
+                gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+                return;
             }
             
             gl.viewport(0, 0, w, h);
@@ -388,10 +383,7 @@
     const gradientSubtractProgram = createProgram(baseVertexShader, gradientSubtractShader);
     const displayProgram = createProgram(baseVertexShader, displayShader);
 
-    if (!advectionProgram || !displayProgram) {
-        console.error('Failed to create shader programs');
-        return;
-    }
+    if (!advectionProgram || !displayProgram) return;
 
     // Get uniforms
     function getUniforms(program) {
@@ -670,6 +662,5 @@
         requestAnimationFrame(update);
     }
 
-    console.log('Fluid cursor initialized');
     update();
 })();
