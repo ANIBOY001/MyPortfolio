@@ -216,13 +216,30 @@ function initProjectModal() {
     });
 }
 
-// Contact Form with Formspree
+// Contact Form Handler
 function initContactForm() {
     const form = document.getElementById('contact-form');
     if (!form) return;
 
     const btn = form.querySelector('button[type="submit"]');
     const statusDiv = document.getElementById('form-status');
+    const action = form.getAttribute('action');
+
+    // If using mailto, let browser handle it naturally
+    if (action && action.startsWith('mailto:')) {
+        form.addEventListener('submit', () => {
+            if (statusDiv) {
+                statusDiv.textContent = 'Opening your email client...';
+                statusDiv.className = 'form-status success visible';
+            }
+            setTimeout(() => {
+                if (statusDiv) statusDiv.classList.remove('visible');
+            }, 3000);
+        });
+        return;
+    }
+
+    // Formspree handling
     const originalText = btn ? btn.textContent : 'Send Message';
 
     form.addEventListener('submit', async (e) => {
