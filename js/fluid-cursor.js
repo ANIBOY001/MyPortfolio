@@ -40,7 +40,7 @@
         PRESSURE: 0.8,
         PRESSURE_ITERATIONS: 20,
         CURL: 25,                      // Medium curl - wide smooth vortices
-        SPLAT_RADIUS: 0.12,            // A little smaller
+        SPLAT_RADIUS: 0.08,            // Smaller orb
         SPLAT_FORCE: 4500,
         COLOR: { r: 0.18, g: 0.18, b: 0.2 },  // More dense gray-black
         EDGE_COLOR: { r: 0.12, g: 0.12, b: 0.15 }, // Darker edge
