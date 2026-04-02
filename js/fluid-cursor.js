@@ -39,8 +39,8 @@
         CURL: 25,                      // Medium curl - wide smooth vortices
         SPLAT_RADIUS: 0.15,            // Bigger fluid
         SPLAT_FORCE: 4500,
-        COLOR: { r: 0.04, g: 0.04, b: 0.045 },  // Almost pure black
-        EDGE_COLOR: { r: 0.02, g: 0.02, b: 0.025 }, // Pitch black edge
+        COLOR: { r: 0.04, g: 0.04, b: 0.04 },  // Pure black-gray (no green/blue tint)
+        EDGE_COLOR: { r: 0.02, g: 0.02, b: 0.02 }, // Pure pitch black edge
         IDLE_MOTION: true,             // Continuous subtle background motion
         COLOR_SHIFT_SPEED: 0.02        // HSV dynamic color shifting
     };
