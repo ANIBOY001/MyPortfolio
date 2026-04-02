@@ -40,7 +40,7 @@
         PRESSURE: 0.8,
         PRESSURE_ITERATIONS: 20,
         CURL: 25,                      // Medium curl - wide smooth vortices
-        SPLAT_RADIUS: 0.15,            // A little smaller
+        SPLAT_RADIUS: 0.12,            // A little smaller
         SPLAT_FORCE: 4500,
         COLOR: { r: 0.18, g: 0.18, b: 0.2 },  // More dense gray-black
         EDGE_COLOR: { r: 0.12, g: 0.12, b: 0.15 }, // Darker edge
@@ -89,6 +89,23 @@
         void main() {
             vec2 coord = vUv - dt * texture2D(uVelocity, vUv).xy * texelSize;
             vec4 result = dissipation * texture2D(uSource, coord);
+            
+            // Swirl effect when fading (based on dissipation)
+            float fadeAmount = 1.0 - dissipation;
+            if (fadeAmount > 0.01) {
+                vec2 center = vec2(0.5, 0.5);
+                vec2 toCenter = vUv - center;
+                float angle = fadeAmount * 2.0 * dt;
+                float s = sin(angle);
+                float c = cos(angle);
+                vec2 rotated = vec2(
+                    toCenter.x * c - toCenter.y * s,
+                    toCenter.x * s + toCenter.y * c
+                );
+                vec2 swirlCoord = center + rotated * 0.98;
+                result += fadeAmount * 0.3 * texture2D(uSource, swirlCoord);
+            }
+            
             gl_FragColor = result;
         }
     `;
