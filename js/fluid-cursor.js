@@ -40,7 +40,7 @@
         PRESSURE: 0.8,
         PRESSURE_ITERATIONS: 20,
         CURL: 25,                      // Medium curl - wide smooth vortices
-        SPLAT_RADIUS: 0.22,            // Thick but not too much
+        SPLAT_RADIUS: 0.18,            // Slightly smaller
         SPLAT_FORCE: 4500,
         COLOR: { r: 0.75, g: 0.75, b: 0.78 },  // Grayish silver matching website
         EDGE_COLOR: { r: 0.55, g: 0.55, b: 0.6 }, // Slight blue-gray shift
@@ -263,9 +263,9 @@
             float waveGlow = density * 0.8;
             finalColor += color * (glow + waveGlow) * 1.8;
             
-            // Very low opacity - NO FOG (0.02 - 0.08 range)
-            float alpha = density * 0.04;
-            alpha = clamp(alpha, 0.0, 0.08);
+            // Very low opacity - more dense but no fog (0.03 - 0.12 range)
+            float alpha = density * 0.06;
+            alpha = clamp(alpha, 0.0, 0.12);
             alpha += glow * 0.02;
             
             gl_FragColor = vec4(finalColor, alpha);
