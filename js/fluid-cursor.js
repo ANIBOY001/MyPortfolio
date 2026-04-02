@@ -264,10 +264,10 @@
             float centerGlow = density * 0.5;
             finalColor += color * (glow + centerGlow) * 1.5;
             
-            // Higher opacity for visibility (0.1 - 0.4 range)
-            float alpha = density * 0.25;
-            alpha = clamp(alpha, 0.0, 0.4);
-            alpha += glow * 0.15;
+            // Very low opacity - only fluid glows, not fog (0.03 - 0.12 range)
+            float alpha = density * 0.06;
+            alpha = clamp(alpha, 0.0, 0.12);
+            alpha += glow * 0.04;
             
             gl_FragColor = vec4(finalColor, alpha);
         }
