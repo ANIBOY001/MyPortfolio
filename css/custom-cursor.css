@@ -5,11 +5,11 @@
     cursor: none !important;
 }
 
-/* Custom cursor elements */
+/* Custom cursor on top of everything */
 .custom-cursor {
     position: fixed;
     pointer-events: none;
-    z-index: 10000;
+    z-index: 10002;
 }
 
 /* Main cursor dot - Simple circle with color inversion */
@@ -73,13 +73,7 @@
     }
 }
 
-/* Hide old cursor elements - using WebGL fluid cursor instead */
-.cursor-dot,
-.cursor-ring {
-    display: none !important;
-}
-
-/* WebGL Fluid Cursor Canvas - on top */
+/* Fluid Simulation Canvas - Background layer */
 .fluid-cursor {
     position: fixed;
     top: 0;
@@ -87,7 +81,7 @@
     width: 100vw;
     height: 100vh;
     pointer-events: none;
-    z-index: 10001;
+    z-index: 1;
 }
 
 
