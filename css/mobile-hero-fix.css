@@ -99,3 +99,18 @@
         font-size: 14px !important;
     }
 }
+
+/* Live Demo Button - More Visible */
+.btn-ghost {
+    background: rgba(166, 167, 162, 0.15) !important;
+    color: #e0e0e0 !important;
+    border: 1px solid rgba(166, 167, 162, 0.4) !important;
+    box-shadow: 0 2px 10px rgba(166, 167, 162, 0.1) !important;
+}
+
+.btn-ghost:hover {
+    background: rgba(166, 167, 162, 0.3) !important;
+    border-color: rgba(166, 167, 162, 0.6) !important;
+    box-shadow: 0 4px 20px rgba(166, 167, 162, 0.2) !important;
+    color: #fff !important;
+}
