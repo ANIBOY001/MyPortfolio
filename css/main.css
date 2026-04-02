@@ -327,9 +327,7 @@ body:hover .cursor-glow {
     right: 0;
     bottom: 0;
     background: url('images/hero-bg.jpg') center/cover no-repeat;
-    opacity: 0.85;
     z-index: 0;
-    animation: heroBgPulse 8s ease-in-out infinite;
 }
 
 .hero-overlay {
@@ -339,9 +337,9 @@ body:hover .cursor-glow {
     right: 0;
     bottom: 0;
     background: 
-        linear-gradient(180deg, rgba(10, 10, 10, 0.7) 0%, rgba(10, 10, 10, 0.4) 30%, rgba(10, 10, 10, 0.5) 70%, rgba(10, 10, 10, 0.85) 100%),
-        radial-gradient(ellipse at 30% 50%, rgba(166, 167, 162, 0.08) 0%, transparent 50%);
-    z-index: 0;
+        linear-gradient(180deg, rgba(10, 10, 10, 0.4) 0%, rgba(10, 10, 10, 0.2) 30%, rgba(10, 10, 10, 0.3) 70%, rgba(10, 10, 10, 0.6) 100%),
+        radial-gradient(ellipse at 30% 50%, rgba(166, 167, 162, 0.05) 0%, transparent 50%);
+    z-index: 1;
 }
 
 @keyframes heroBgPulse {
