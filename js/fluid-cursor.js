@@ -635,12 +635,13 @@
             }
         }
         
-        // Dynamic HSV color shifting
+        // Dynamic HSV color shifting - grayscale only (no color tint)
         hueShift += config.COLOR_SHIFT_SPEED * dt;
+        const shiftAmount = Math.sin(hueShift) * 0.02;
         const shiftedColor = {
-            r: config.COLOR.r + Math.sin(hueShift) * 0.02,
-            g: config.COLOR.g + Math.cos(hueShift * 0.7) * 0.015,
-            b: config.COLOR.b + Math.sin(hueShift * 1.3) * 0.025
+            r: config.COLOR.r + shiftAmount,
+            g: config.COLOR.g + shiftAmount,
+            b: config.COLOR.b + shiftAmount
         };
 
         step(dt);
