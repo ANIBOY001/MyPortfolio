@@ -32,7 +32,7 @@
         CURL: 20,
         SPLAT_RADIUS: 0.25,
         SPLAT_FORCE: 3000,
-        COLOR: { r: 0.06, g: 0.06, b: 0.06 },
+        COLOR: { r: 0.15, g: 0.15, b: 0.15 },  // MUCH brighter for testing
         BLUR_AMOUNT: 2.0,
         SMOOTHING: 0.08,
         IDLE_STRENGTH: 0.15
@@ -230,9 +230,9 @@
             float glow = exp(-density * 4.0) * 1.2;
             finalColor += color * glow * 0.3;
             
-            // Low opacity - visible but subtle
-            float alpha = density * 0.12;
-            alpha = clamp(alpha, 0.0, 0.15);
+            // TEST: High opacity to verify visibility
+            float alpha = density * 0.5;
+            alpha = clamp(alpha, 0.0, 0.5);
             
             gl_FragColor = vec4(finalColor, alpha);
         }
