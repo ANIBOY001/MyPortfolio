@@ -527,93 +527,122 @@ function initCustomCursor() {
         });
     });
     
-    // Trail/Wave particle system
-    let lastTrailTime = 0;
-    let lastWaveTime = 0;
+    // Trail/Wave particle system - Smoke Wave Effect
     let lastSmokeTime = 0;
-    const trailInterval = 30; // Create trail every 30ms
-    const waveInterval = 400; // Create wave ring every 400ms
-    const smokeInterval = 150; // Create smoke particle every 150ms
+    let lastWaveTime = 0;
+    let lastOrbTime = 0;
+    const smokeInterval = 40; // Create smoke wave every 40ms
+    const waveInterval = 80; // Create wave segment every 80ms
+    const orbInterval = 200; // Create glow orb every 200ms
     
-    // Track mouse positions for smooth trail
-    const positions = [];
-    const maxPositions = 5;
+    // Track mouse velocity for dynamic effects
+    let lastX = 0, lastY = 0;
+    let velocity = 0;
     
     document.addEventListener('mousemove', (e) => {
         const currentTime = Date.now();
         
-        // Store positions for smooth trailing
-        positions.push({ x: e.clientX, y: e.clientY, time: currentTime });
-        if (positions.length > maxPositions) {
-            positions.shift();
+        // Calculate velocity
+        const dx = e.clientX - lastX;
+        const dy = e.clientY - lastY;
+        velocity = Math.sqrt(dx * dx + dy * dy);
+        lastX = e.clientX;
+        lastY = e.clientY;
+        
+        // Create smoke wave particles
+        if (currentTime - lastSmokeTime > smokeInterval) {
+            createSmokeWave(e.clientX, e.clientY, velocity);
+            lastSmokeTime = currentTime;
         }
         
-        // Create trail dots
-        if (currentTime - lastTrailTime > trailInterval) {
-            createTrailParticle(e.clientX, e.clientY);
-            lastTrailTime = currentTime;
-        }
-        
-        // Create expanding wave rings
-        if (currentTime - lastWaveTime > waveInterval) {
-            createWaveRing(e.clientX, e.clientY);
+        // Create flowing wave segments
+        if (currentTime - lastWaveTime > waveInterval && velocity > 2) {
+            createWaveSegment(e.clientX, e.clientY, dx, dy, velocity);
             lastWaveTime = currentTime;
         }
         
-        // Create smoke particles
-        if (currentTime - lastSmokeTime > smokeInterval) {
-            createSmokeParticle(e.clientX, e.clientY);
-            lastSmokeTime = currentTime;
+        // Create ethereal glow orbs
+        if (currentTime - lastOrbTime > orbInterval) {
+            createGlowOrb(e.clientX, e.clientY);
+            lastOrbTime = currentTime;
         }
     }, { passive: true });
     
-    // Create trail particle
-    function createTrailParticle(x, y) {
-        const trail = document.createElement('div');
-        trail.className = 'cursor-trail';
-        const size = Math.random() * 8 + 4; // Random size 4-12px
-        trail.style.width = size + 'px';
-        trail.style.height = size + 'px';
-        trail.style.left = x + 'px';
-        trail.style.top = y + 'px';
-        trail.style.background = `rgba(166, 167, 162, ${Math.random() * 0.3 + 0.2})`;
-        document.body.appendChild(trail);
-        
-        // Remove after animation
-        setTimeout(() => {
-            trail.remove();
-        }, 1000);
-    }
-    
-    // Create expanding wave ring
-    function createWaveRing(x, y) {
-        const wave = document.createElement('div');
-        wave.className = 'cursor-wave';
-        wave.style.left = x + 'px';
-        wave.style.top = y + 'px';
-        document.body.appendChild(wave);
-        
-        setTimeout(() => {
-            wave.remove();
-        }, 1200);
-    }
-    
-    // Create smoke particle
-    function createSmokeParticle(x, y) {
+    // Create smooth smoke wave
+    function createSmokeWave(x, y, velocity) {
         const smoke = document.createElement('div');
-        smoke.className = 'smoke-particle';
-        const size = Math.random() * 20 + 15; // Random size 15-35px
+        smoke.className = 'smoke-wave';
+        const size = Math.min(60 + velocity * 2, 100); // Size based on speed
         smoke.style.width = size + 'px';
-        smoke.style.height = size + 'px';
-        // Add slight random offset for natural movement
-        const offsetX = (Math.random() - 0.5) * 10;
+        smoke.style.height = (size * 0.7) + 'px'; // Elliptical
+        smoke.style.left = x + 'px';
+        smoke.style.top = y + 'px';
+        
+        // Random slight offset for organic feel
+        const offsetX = (Math.random() - 0.5) * 15;
         const offsetY = (Math.random() - 0.5) * 10;
         smoke.style.left = (x + offsetX) + 'px';
         smoke.style.top = (y + offsetY) + 'px';
+        
         document.body.appendChild(smoke);
         
         setTimeout(() => {
             smoke.remove();
+        }, 2000);
+    }
+    
+    // Create flowing wave segment
+    function createWaveSegment(x, y, dx, dy, velocity) {
+        if (velocity < 3) return; // Only on noticeable movement
+        
+        const wave = document.createElement('div');
+        wave.className = 'wave-segment';
+        
+        // Calculate segment properties based on movement direction
+        const length = Math.min(velocity * 3, 80);
+        const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+        
+        wave.style.width = length + 'px';
+        wave.style.left = x + 'px';
+        wave.style.top = y + 'px';
+        wave.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`;
+        
+        // Dynamic opacity based on speed
+        const opacity = Math.min(velocity / 20, 0.5);
+        wave.style.background = `linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(255, 255, 255, ${opacity * 0.6}) 20%,
+            rgba(255, 255, 255, ${opacity}) 50%,
+            rgba(255, 255, 255, ${opacity * 0.6}) 80%,
+            transparent 100%
+        )`;
+        
+        document.body.appendChild(wave);
+        
+        setTimeout(() => {
+            wave.remove();
         }, 1500);
+    }
+    
+    // Create ethereal glow orb
+    function createGlowOrb(x, y) {
+        const orb = document.createElement('div');
+        orb.className = 'glow-orb';
+        const size = Math.random() * 30 + 40; // 40-70px
+        orb.style.width = size + 'px';
+        orb.style.height = size + 'px';
+        
+        // Slight random offset
+        const offsetX = (Math.random() - 0.5) * 20;
+        const offsetY = (Math.random() - 0.5) * 15;
+        orb.style.left = (x + offsetX) + 'px';
+        orb.style.top = (y + offsetY) + 'px';
+        
+        document.body.appendChild(orb);
+        
+        setTimeout(() => {
+            orb.remove();
+        }, 1800);
     }
 }
