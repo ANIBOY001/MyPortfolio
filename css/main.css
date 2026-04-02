@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
 /* ========================================
    DESIGN SYSTEM
    ======================================== */
@@ -362,19 +364,31 @@ body:hover .cursor-glow {
 }
 
 .hero-greeting {
-    font-size: 16px;
+    font-family: 'VT323', monospace;
+    font-size: 24px;
     color: var(--accent-light);
     margin-bottom: 20px;
-    letter-spacing: 2px;
+    letter-spacing: 4px;
     text-transform: uppercase;
+    text-shadow: 
+        2px 2px 0px rgba(166, 167, 162, 0.3),
+        4px 4px 0px rgba(166, 167, 162, 0.2),
+        6px 6px 0px rgba(166, 167, 162, 0.1);
 }
 
 .hero-title {
-    font-family: var(--font-heading);
-    font-size: clamp(40px, 8vw, 72px);
-    font-weight: 700;
-    line-height: 1.1;
+    font-family: 'VT323', monospace;
+    font-size: clamp(50px, 10vw, 90px);
+    font-weight: 400;
+    line-height: 1;
     margin-bottom: 24px;
+    letter-spacing: 2px;
+    color: var(--text-primary);
+    text-shadow: 
+        3px 3px 0px rgba(166, 167, 162, 0.4),
+        6px 6px 0px rgba(166, 167, 162, 0.3),
+        9px 9px 0px rgba(166, 167, 162, 0.2),
+        12px 12px 0px rgba(166, 167, 162, 0.1);
 }
 
 .gradient-text {
@@ -382,13 +396,36 @@ body:hover .cursor-glow {
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+    text-shadow: none;
+    position: relative;
+}
+
+.gradient-text::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(3px 3px 0px rgba(166, 167, 162, 0.4))
+            drop-shadow(6px 6px 0px rgba(166, 167, 162, 0.3))
+            drop-shadow(9px 9px 0px rgba(166, 167, 162, 0.2))
+            drop-shadow(12px 12px 0px rgba(166, 167, 162, 0.1));
+    pointer-events: none;
 }
 
 .hero-subtitle {
-    font-size: 18px;
+    font-family: 'VT323', monospace;
+    font-size: 22px;
     color: var(--text-secondary);
     max-width: 500px;
     margin: 0 auto 40px;
+    letter-spacing: 1px;
+    text-shadow: 
+        2px 2px 0px rgba(166, 167, 162, 0.2),
+        4px 4px 0px rgba(166, 167, 162, 0.1);
 }
 
 .hero-cta {
