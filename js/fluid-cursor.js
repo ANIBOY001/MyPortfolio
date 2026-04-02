@@ -19,22 +19,20 @@
     const texType = ext ? ext.HALF_FLOAT_OES : gl.UNSIGNED_BYTE;
     const filtering = linearExt ? gl.LINEAR : gl.NEAREST;
 
-    // PREMIUM AMBIENT SYSTEM - Client Feedback Implementation
+    // PREMIUM AMBIENT SYSTEM
     const config = {
         SIM_RESOLUTION: 128,
-        DYE_RESOLUTION: 256,           // Lower for softer look
-        DENSITY_DISSIPATION: 0.90,     // FAST fade (0.3-0.8s)
-        VELOCITY_DISSIPATION: 0.96,    // Slow cinematic
+        DYE_RESOLUTION: 512,
+        DENSITY_DISSIPATION: 0.97,
+        VELOCITY_DISSIPATION: 0.985,
         PRESSURE: 0.8,
         PRESSURE_ITERATIONS: 20,
-        CURL: 12,                      // Gentler
-        SPLAT_RADIUS: 0.06,            // Smaller disturbance
-        SPLAT_FORCE: 600,              // MUCH weaker (was 4500)
-        COLOR: { r: 0.025, g: 0.025, b: 0.025 },  // Near black, 60% less visible
-        OPACITY_SCALE: 0.02,           // 60% opacity reduction
-        BLUR_AMOUNT: 3.0,              // More diffusion
-        IDLE_STRENGTH: 0.06,           // Subtle idle
-        SMOOTHING: 0.06                // Cursor lag (easing)
+        CURL: 20,
+        SPLAT_RADIUS: 0.25,
+        SPLAT_FORCE: 3000,
+        COLOR: { r: 0.03, g: 0.03, b: 0.03 },
+        BLUR_AMOUNT: 2.0,
+        SMOOTHING: 0.08
     };
 
     // Resize
@@ -233,7 +231,7 @@
             float alpha = density * 0.02;
             alpha = clamp(alpha, 0.0, 0.035);
             
-            gl_FragColor = vec4(finalColor, alpha);
+            gl_FragColor = vec4(finalColor, alpha * 0.3);
         }
     `;
 
@@ -367,7 +365,10 @@
     // ==================== SIMULATION ====================
 
     function splat(x, y, dx, dy, intensity = 1.0) {
-        const colorScale = intensity * 0.3;  // Much weaker
+        // Reduce impact
+        dx *= 0.3;
+        dy *= 0.3;
+        const colorScale = intensity * 0.5;
         
         gl.bindFramebuffer(gl.FRAMEBUFFER, density.write.fbo);
         gl.viewport(0, 0, density.write.width, density.write.height);
@@ -510,11 +511,11 @@
 
     // ==================== INPUT - SMOOTHED CURSOR ====================
 
-    // Smoothed cursor follows mouse with lag (easing)
     let cursorX = 0, cursorY = 0;
     let targetX = 0, targetY = 0;
     let hasMoved = false;
     let idlePhase = 0;
+    let lastSplatTime = 0;
 
     window.addEventListener('mousemove', e => {
         targetX = e.clientX / canvas.width;
@@ -542,9 +543,11 @@
             cursorX += dx * config.SMOOTHING;
             cursorY += dy * config.SMOOTHING;
             
-            // Only disturb if moving enough
-            if (Math.abs(dx) > 0.002 || Math.abs(dy) > 0.002) {
+            // Throttled splat - only every 50ms
+            const now = Date.now();
+            if (now - lastSplatTime > 50 && (Math.abs(dx) > 0.002 || Math.abs(dy) > 0.002)) {
                 splat(cursorX, cursorY, dx * 30, dy * 30, 0.4);
+                lastSplatTime = now;
             }
         }
         
