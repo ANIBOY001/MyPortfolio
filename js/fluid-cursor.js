@@ -1,6 +1,6 @@
 /**
- * Ethereal Fluid Smoke - Fixed Version
- * WebGL2 with proper double buffering
+ * WebGL Fluid Smoke - Compatible Version
+ * Uses standard RGBA8 format for maximum compatibility
  */
 
 (function() {
@@ -11,25 +11,27 @@
     const canvas = document.getElementById('fluid-cursor');
     if (!canvas) return;
 
-    const gl = canvas.getContext('webgl2', {
+    const gl = canvas.getContext('webgl', {
         alpha: true,
         antialias: false,
         preserveDrawingBuffer: false
     });
     
     if (!gl) {
-        console.log('WebGL2 not supported, trying WebGL1');
-        const gl1 = canvas.getContext('webgl', { alpha: true, antialias: false });
-        if (!gl1) {
-            console.log('WebGL not supported');
-            return;
-        }
-        // WebGL1 fallback with simplified effect
-        initSimpleSmoke(gl1);
+        console.log('WebGL not supported');
         return;
     }
 
-    // Configuration for ethereal smoke
+    // Check for float texture support
+    const ext = gl.getExtension('OES_texture_half_float');
+    const linearExt = gl.getExtension('OES_texture_half_float_linear');
+    
+    // Use half-float if available, otherwise fallback to unsigned byte
+    const useHalfFloat = !!ext;
+    const texType = useHalfFloat ? ext.HALF_FLOAT_OES : gl.UNSIGNED_BYTE;
+    const filtering = linearExt ? gl.LINEAR : gl.NEAREST;
+
+    // Configuration
     const config = {
         SIM_RESOLUTION: 128,
         DYE_RESOLUTION: 512,
@@ -38,8 +40,8 @@
         PRESSURE: 0.8,
         PRESSURE_ITERATIONS: 20,
         CURL: 20,
-        SPLAT_RADIUS: 0.4,
-        SPLAT_FORCE: 3000,
+        SPLAT_RADIUS: 0.3,
+        SPLAT_FORCE: 5000,
         COLOR: { r: 0.65, g: 0.65, b: 0.63 }
     };
 
@@ -47,19 +49,20 @@
     function resize() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
+        gl.viewport(0, 0, canvas.width, canvas.height);
     }
     resize();
     window.addEventListener('resize', resize, { passive: true });
 
     // ==================== SHADERS ====================
 
-    const vertexShader = `#version 300 es
-        in vec2 aPosition;
-        out vec2 vUv;
-        out vec2 vL;
-        out vec2 vR;
-        out vec2 vT;
-        out vec2 vB;
+    const baseVertexShader = `
+        attribute vec2 aPosition;
+        varying vec2 vUv;
+        varying vec2 vL;
+        varying vec2 vR;
+        varying vec2 vT;
+        varying vec2 vB;
         uniform vec2 texelSize;
         void main() {
             vUv = aPosition * 0.5 + 0.5;
@@ -71,53 +74,25 @@
         }
     `;
 
-    // Fragment shader with fBM noise for smoke texture
-    const advectionShader = `#version 300 es
+    const advectionShader = `
         precision highp float;
-        precision highp sampler2D;
-        in vec2 vUv;
-        out vec4 fragColor;
+        varying vec2 vUv;
         uniform sampler2D uVelocity;
         uniform sampler2D uSource;
         uniform vec2 texelSize;
         uniform float dt;
         uniform float dissipation;
         
-        float hash(vec2 p) {
-            return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
-        }
-        float noise(vec2 p) {
-            vec2 i = floor(p);
-            vec2 f = fract(p);
-            f = f * f * (3.0 - 2.0 * f);
-            return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x),
-                       mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), f.x), f.y);
-        }
-        float fbm(vec2 p) {
-            float v = 0.0;
-            float a = 0.5;
-            for (int i = 0; i < 5; i++) {
-                v += a * noise(p);
-                p *= 2.0;
-                a *= 0.5;
-            }
-            return v;
-        }
-        
         void main() {
-            vec2 coord = vUv - dt * texture(uVelocity, vUv).xy * texelSize;
-            vec4 result = dissipation * texture(uSource, coord);
-            float smoke = fbm(vUv * 4.0) * 0.02;
-            result.xyz += smoke;
-            fragColor = result;
+            vec2 coord = vUv - dt * texture2D(uVelocity, vUv).xy * texelSize;
+            vec4 result = dissipation * texture2D(uSource, coord);
+            gl_FragColor = result;
         }
     `;
 
-    const splatShader = `#version 300 es
+    const splatShader = `
         precision highp float;
-        precision highp sampler2D;
-        in vec2 vUv;
-        out vec4 fragColor;
+        varying vec2 vUv;
         uniform sampler2D uTarget;
         uniform float aspectRatio;
         uniform vec3 color;
@@ -128,34 +103,30 @@
             vec2 p = vUv - point.xy;
             p.x *= aspectRatio;
             float strength = exp(-dot(p, p) / radius);
-            vec3 base = texture(uTarget, vUv).xyz;
-            fragColor = vec4(base + strength * color, 1.0);
+            vec3 base = texture2D(uTarget, vUv).xyz;
+            gl_FragColor = vec4(base + strength * color, 1.0);
         }
     `;
 
-    const curlShader = `#version 300 es
+    const curlShader = `
         precision highp float;
-        precision highp sampler2D;
-        in vec2 vUv;
-        out vec4 fragColor;
+        varying vec2 vUv;
         uniform sampler2D uVelocity;
         uniform vec2 texelSize;
         
         void main() {
-            float L = texture(uVelocity, vUv - vec2(texelSize.x, 0.0)).y;
-            float R = texture(uVelocity, vUv + vec2(texelSize.x, 0.0)).y;
-            float T = texture(uVelocity, vUv + vec2(0.0, texelSize.y)).x;
-            float B = texture(uVelocity, vUv - vec2(0.0, texelSize.y)).x;
+            float L = texture2D(uVelocity, vUv - vec2(texelSize.x, 0.0)).y;
+            float R = texture2D(uVelocity, vUv + vec2(texelSize.x, 0.0)).y;
+            float T = texture2D(uVelocity, vUv + vec2(0.0, texelSize.y)).x;
+            float B = texture2D(uVelocity, vUv - vec2(0.0, texelSize.y)).x;
             float vorticity = R - L - T + B;
-            fragColor = vec4(vorticity * 0.5, 0.0, 0.0, 1.0);
+            gl_FragColor = vec4(vorticity * 0.5, 0.0, 0.0, 1.0);
         }
     `;
 
-    const vorticityShader = `#version 300 es
+    const vorticityShader = `
         precision highp float;
-        precision highp sampler2D;
-        in vec2 vUv;
-        out vec4 fragColor;
+        varying vec2 vUv;
         uniform sampler2D uVelocity;
         uniform sampler2D uCurl;
         uniform float curl;
@@ -163,86 +134,82 @@
         uniform vec2 texelSize;
         
         void main() {
-            float L = texture(uCurl, vUv - vec2(texelSize.x, 0.0)).x;
-            float R = texture(uCurl, vUv + vec2(texelSize.x, 0.0)).x;
-            float T = texture(uCurl, vUv + vec2(0.0, texelSize.y)).x;
-            float B = texture(uCurl, vUv - vec2(0.0, texelSize.y)).x;
-            float C = texture(uCurl, vUv).x;
+            float L = texture2D(uCurl, vUv - vec2(texelSize.x, 0.0)).x;
+            float R = texture2D(uCurl, vUv + vec2(texelSize.x, 0.0)).x;
+            float T = texture2D(uCurl, vUv + vec2(0.0, texelSize.y)).x;
+            float B = texture2D(uCurl, vUv - vec2(0.0, texelSize.y)).x;
+            float C = texture2D(uCurl, vUv).x;
             vec2 force = 0.5 * vec2(abs(T) - abs(B), abs(R) - abs(L));
             force = normalize(force + 0.00001) * curl * C;
             force.y *= -1.0;
-            vec2 vel = texture(uVelocity, vUv).xy;
-            fragColor = vec4(vel + force * dt, 0.0, 1.0);
+            vec2 vel = texture2D(uVelocity, vUv).xy;
+            gl_FragColor = vec4(vel + force * dt, 0.0, 1.0);
         }
     `;
 
-    const divergenceShader = `#version 300 es
+    const divergenceShader = `
         precision highp float;
-        precision highp sampler2D;
-        in vec2 vUv;
-        out vec4 fragColor;
+        varying vec2 vUv;
         uniform sampler2D uVelocity;
         uniform vec2 texelSize;
         
         void main() {
-            float L = texture(uVelocity, vUv - vec2(texelSize.x, 0.0)).x;
-            float R = texture(uVelocity, vUv + vec2(texelSize.x, 0.0)).x;
-            float T = texture(uVelocity, vUv + vec2(0.0, texelSize.y)).y;
-            float B = texture(uVelocity, vUv - vec2(0.0, texelSize.y)).y;
+            float L = texture2D(uVelocity, vUv - vec2(texelSize.x, 0.0)).x;
+            float R = texture2D(uVelocity, vUv + vec2(texelSize.x, 0.0)).x;
+            float T = texture2D(uVelocity, vUv + vec2(0.0, texelSize.y)).y;
+            float B = texture2D(uVelocity, vUv - vec2(0.0, texelSize.y)).y;
             float div = 0.5 * (R - L + T - B);
-            fragColor = vec4(div, 0.0, 0.0, 1.0);
+            gl_FragColor = vec4(div, 0.0, 0.0, 1.0);
         }
     `;
 
-    const pressureShader = `#version 300 es
+    const pressureShader = `
         precision highp float;
-        precision highp sampler2D;
-        in vec2 vUv;
-        out vec4 fragColor;
+        varying vec2 vUv;
         uniform sampler2D uPressure;
         uniform sampler2D uDivergence;
         uniform vec2 texelSize;
         
         void main() {
-            float L = texture(uPressure, vUv - vec2(texelSize.x, 0.0)).x;
-            float R = texture(uPressure, vUv + vec2(texelSize.x, 0.0)).x;
-            float T = texture(uPressure, vUv + vec2(0.0, texelSize.y)).x;
-            float B = texture(uPressure, vUv - vec2(0.0, texelSize.y)).x;
-            float divergence = texture(uDivergence, vUv).x;
+            float L = texture2D(uPressure, vUv - vec2(texelSize.x, 0.0)).x;
+            float R = texture2D(uPressure, vUv + vec2(texelSize.x, 0.0)).x;
+            float T = texture2D(uPressure, vUv + vec2(0.0, texelSize.y)).x;
+            float B = texture2D(uPressure, vUv - vec2(0.0, texelSize.y)).x;
+            float divergence = texture2D(uDivergence, vUv).x;
             float pressure = (L + R + B + T - divergence) * 0.25;
-            fragColor = vec4(pressure, 0.0, 0.0, 1.0);
+            gl_FragColor = vec4(pressure, 0.0, 0.0, 1.0);
         }
     `;
 
-    const gradientSubtractShader = `#version 300 es
+    const gradientSubtractShader = `
         precision highp float;
-        precision highp sampler2D;
-        in vec2 vUv;
-        out vec4 fragColor;
+        varying vec2 vUv;
         uniform sampler2D uPressure;
         uniform sampler2D uVelocity;
         uniform vec2 texelSize;
         
         void main() {
-            float L = texture(uPressure, vUv - vec2(texelSize.x, 0.0)).x;
-            float R = texture(uPressure, vUv + vec2(texelSize.x, 0.0)).x;
-            float T = texture(uPressure, vUv + vec2(0.0, texelSize.y)).x;
-            float B = texture(uPressure, vUv - vec2(0.0, texelSize.y)).x;
-            vec2 velocity = texture(uVelocity, vUv).xy;
+            float L = texture2D(uPressure, vUv - vec2(texelSize.x, 0.0)).x;
+            float R = texture2D(uPressure, vUv + vec2(texelSize.x, 0.0)).x;
+            float T = texture2D(uPressure, vUv + vec2(0.0, texelSize.y)).x;
+            float B = texture2D(uPressure, vUv - vec2(0.0, texelSize.y)).x;
+            vec2 velocity = texture2D(uVelocity, vUv).xy;
             velocity -= vec2(R - L, T - B) * 0.5;
-            fragColor = vec4(velocity, 0.0, 1.0);
+            gl_FragColor = vec4(velocity, 0.0, 1.0);
         }
     `;
 
-    const displayShader = `#version 300 es
+    // Display shader with smoke texture
+    const displayShader = `
         precision highp float;
-        precision highp sampler2D;
-        in vec2 vUv;
-        out vec4 fragColor;
+        varying vec2 vUv;
         uniform sampler2D uTexture;
         uniform vec3 color;
         
-        float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+        float hash(vec2 p) {
+            return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+        }
+        
         float noise(vec2 p) {
             vec2 i = floor(p);
             vec2 f = fract(p);
@@ -250,6 +217,7 @@
             return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x),
                        mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), f.x), f.y);
         }
+        
         float fbm(vec2 p) {
             float v = 0.0;
             float a = 0.5;
@@ -262,13 +230,18 @@
         }
         
         void main() {
-            vec4 c = texture(uTexture, vUv);
+            vec4 c = texture2D(uTexture, vUv);
             float density = (c.r + c.g + c.b) * 0.333;
+            
+            // Add smoke texture
             float smoke = fbm(vUv * 3.0 + c.xy * 2.0) * 0.3 + 0.7;
             density *= smoke;
+            
+            // Ethereal color
             vec3 smokeColor = color * density * 1.5;
             float alpha = min(density * 0.5, 0.4);
-            fragColor = vec4(smokeColor, alpha);
+            
+            gl_FragColor = vec4(smokeColor, alpha);
         }
     `;
 
@@ -302,27 +275,30 @@
         return prog;
     }
 
-    // ==================== FBO ====================
+    // ==================== FBO - Compatible Format ====================
 
     class FBO {
-        constructor(w, h) {
+        constructor(w, h, type, filter) {
             this.width = w;
             this.height = h;
             
             this.texture = gl.createTexture();
             gl.bindTexture(gl.TEXTURE_2D, this.texture);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, filter);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, filter);
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA16F, w, h, 0, gl.RGBA, gl.HALF_FLOAT, null);
+            
+            // Use RGBA with the detected type (half-float or unsigned byte)
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, w, h, 0, gl.RGBA, type, null);
             
             this.fbo = gl.createFramebuffer();
             gl.bindFramebuffer(gl.FRAMEBUFFER, this.fbo);
             gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.texture, 0);
             
-            if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE) {
-                console.error('Framebuffer incomplete');
+            const status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+            if (status !== gl.FRAMEBUFFER_COMPLETE) {
+                console.error('FBO incomplete:', status, 'width:', w, 'height:', h, 'type:', type);
             }
             
             gl.viewport(0, 0, w, h);
@@ -331,9 +307,9 @@
     }
 
     class DoubleFBO {
-        constructor(w, h) {
-            this.read = new FBO(w, h);
-            this.write = new FBO(w, h);
+        constructor(w, h, type, filter) {
+            this.read = new FBO(w, h, type, filter);
+            this.write = new FBO(w, h, type, filter);
         }
         swap() {
             const t = this.read;
@@ -342,22 +318,22 @@
         }
     }
 
-    // Create FBOs
-    const velocity = new DoubleFBO(config.SIM_RESOLUTION, config.SIM_RESOLUTION);
-    const density = new DoubleFBO(config.DYE_RESOLUTION, config.DYE_RESOLUTION);
-    const pressure = new DoubleFBO(config.SIM_RESOLUTION, config.SIM_RESOLUTION);
-    const divergence = new FBO(config.SIM_RESOLUTION, config.SIM_RESOLUTION);
-    const curl = new FBO(config.SIM_RESOLUTION, config.SIM_RESOLUTION);
+    // Create FBOs with compatible format
+    const velocity = new DoubleFBO(config.SIM_RESOLUTION, config.SIM_RESOLUTION, texType, filtering);
+    const density = new DoubleFBO(config.DYE_RESOLUTION, config.DYE_RESOLUTION, texType, filtering);
+    const pressure = new DoubleFBO(config.SIM_RESOLUTION, config.SIM_RESOLUTION, texType, gl.NEAREST);
+    const divergence = new FBO(config.SIM_RESOLUTION, config.SIM_RESOLUTION, texType, gl.NEAREST);
+    const curl = new FBO(config.SIM_RESOLUTION, config.SIM_RESOLUTION, texType, gl.NEAREST);
 
     // Create programs
-    const advectionProgram = createProgram(vertexShader, advectionShader);
-    const splatProgram = createProgram(vertexShader, splatShader);
-    const curlProgram = createProgram(vertexShader, curlShader);
-    const vorticityProgram = createProgram(vertexShader, vorticityShader);
-    const divergenceProgram = createProgram(vertexShader, divergenceShader);
-    const pressureProgram = createProgram(vertexShader, pressureShader);
-    const gradientSubtractProgram = createProgram(vertexShader, gradientSubtractShader);
-    const displayProgram = createProgram(vertexShader, displayShader);
+    const advectionProgram = createProgram(baseVertexShader, advectionShader);
+    const splatProgram = createProgram(baseVertexShader, splatShader);
+    const curlProgram = createProgram(baseVertexShader, curlShader);
+    const vorticityProgram = createProgram(baseVertexShader, vorticityShader);
+    const divergenceProgram = createProgram(baseVertexShader, divergenceShader);
+    const pressureProgram = createProgram(baseVertexShader, pressureShader);
+    const gradientSubtractProgram = createProgram(baseVertexShader, gradientSubtractShader);
+    const displayProgram = createProgram(baseVertexShader, displayShader);
 
     if (!advectionProgram || !displayProgram) {
         console.error('Failed to create shader programs');
@@ -384,11 +360,8 @@
     const gradientSubtractUni = getUniforms(gradientSubtractProgram);
     const displayUni = getUniforms(displayProgram);
 
-    // ==================== RENDER ====================
+    // ==================== RENDER SETUP ====================
 
-    const vao = gl.createVertexArray();
-    gl.bindVertexArray(vao);
-    
     const quadBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, quadBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, -1, 1, 1, 1, 1, -1]), gl.STATIC_DRAW);
@@ -399,7 +372,8 @@
 
     function bind(program) {
         gl.useProgram(program);
-        gl.bindVertexArray(vao);
+        gl.bindBuffer(gl.ARRAY_BUFFER, quadBuffer);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
         const posLoc = gl.getAttribLocation(program, 'aPosition');
         gl.enableVertexAttribArray(posLoc);
         gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
@@ -573,7 +547,7 @@
         lastY = e.clientY;
     }, { passive: true });
 
-    // ==================== LOOP ====================
+    // ==================== RENDER LOOP ====================
 
     let lastTime = Date.now();
 
@@ -599,11 +573,6 @@
         requestAnimationFrame(update);
     }
 
-    console.log('Ethereal Fluid Smoke initialized (WebGL2)');
+    console.log('WebGL Fluid Smoke initialized - format:', useHalfFloat ? 'half-float' : 'rgba8');
     update();
-
-    // WebGL1 fallback
-    function initSimpleSmoke(gl) {
-        console.log('Using WebGL1 simple smoke fallback');
-    }
 })();
