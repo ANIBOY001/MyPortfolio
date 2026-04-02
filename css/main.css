@@ -3419,6 +3419,24 @@ section.reveal-section.active {
     }
 }
 
+/* Navigation Mobile - Override to show links */
+@media (max-width: 768px) {
+    .nav-links {
+        position: static !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        flex-direction: row !important;
+        background: transparent !important;
+        padding: 0 !important;
+        gap: 16px !important;
+    }
+    
+    .nav-links a {
+        font-size: 14px !important;
+        padding: 6px 12px !important;
+    }
+}
+
 /* Small Phones (480px and below) */
 @media (max-width: 480px) {
     .container {
