@@ -40,7 +40,7 @@
         PRESSURE: 0.8,
         PRESSURE_ITERATIONS: 20,
         CURL: 12,                      // Medium-low curl - smooth, not chaotic
-        SPLAT_RADIUS: 0.25,            // Medium-large splats (80-160px feel)
+        SPLAT_RADIUS: 0.18,            // Smaller (was 0.25)
         SPLAT_FORCE: 1500,             // Slow, smooth reaction
         COLOR: { r: 0.235, g: 0.949, b: 0.89 },  // Muted cyan #3cf2e3 (toned down)
         EDGE_COLOR: { r: 0.4, g: 0.35, b: 0.55 }  // Slight purple/blue shift
