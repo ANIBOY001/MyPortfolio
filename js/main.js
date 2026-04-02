@@ -214,31 +214,59 @@ function initProjectModal() {
     });
 }
 
-// Contact Form
+// Contact Form with Formspree
 function initContactForm() {
     const form = document.getElementById('contact-form');
-    
-    form.addEventListener('submit', (e) => {
+    if (!form) return;
+
+    const btn = form.querySelector('button[type="submit"]');
+    const statusDiv = document.getElementById('form-status');
+    const originalText = btn ? btn.textContent : 'Send Message';
+
+    form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
-        const btn = form.querySelector('button[type="submit"]');
-        const originalText = btn.textContent;
-        
-        btn.textContent = 'Sending...';
-        btn.disabled = true;
-        
-        // Simulate form submission
-        setTimeout(() => {
-            btn.textContent = 'Message Sent!';
-            btn.style.background = '#22c55e';
-            form.reset();
-            
-            setTimeout(() => {
+
+        if (btn) {
+            btn.disabled = true;
+            btn.textContent = 'Sending...';
+        }
+        if (statusDiv) {
+            statusDiv.className = 'form-status';
+        }
+
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                if (statusDiv) {
+                    statusDiv.textContent = 'Message sent successfully! I\'ll get back to you soon.';
+                    statusDiv.className = 'form-status success visible';
+                }
+                form.reset();
+            } else {
+                throw new Error('Failed to send');
+            }
+        } catch (error) {
+            if (statusDiv) {
+                statusDiv.textContent = 'Failed to send. Please try again or email me directly.';
+                statusDiv.className = 'form-status error visible';
+            }
+        } finally {
+            if (btn) {
                 btn.textContent = originalText;
-                btn.style.background = '';
                 btn.disabled = false;
-            }, 3000);
-        }, 1500);
+            }
+
+            setTimeout(() => {
+                if (statusDiv) statusDiv.classList.remove('visible');
+            }, 5000);
+        }
     });
 }
 

@@ -762,23 +762,54 @@ body:hover .cursor-glow {
 .form-input {
     width: 100%;
     padding: 16px 20px;
-    background: var(--bg-tertiary);
-    border: 1px solid var(--border-color);
+    background: rgba(30, 30, 30, 0.9);
+    border: 2px solid rgba(166, 167, 162, 0.3);
     border-radius: var(--radius-md);
     color: var(--text-primary);
     font-family: var(--font-body);
     font-size: 15px;
     transition: all var(--transition-fast);
+    backdrop-filter: blur(10px);
 }
 
 .form-input:focus {
     outline: none;
     border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+    box-shadow: 0 0 20px rgba(166, 167, 162, 0.2), inset 0 0 10px rgba(166, 167, 162, 0.05);
+    background: rgba(40, 40, 40, 0.95);
 }
 
 .form-input::placeholder {
-    color: var(--text-muted);
+    color: #888;
+}
+
+.form-status {
+    margin-top: 16px;
+    padding: 12px 16px;
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+}
+
+.form-status.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.form-status.success {
+    background: rgba(39, 201, 63, 0.15);
+    border: 1px solid rgba(39, 201, 63, 0.4);
+    color: #4ade80;
+}
+
+.form-status.error {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: #f87171;
 }
 
 .form-textarea {

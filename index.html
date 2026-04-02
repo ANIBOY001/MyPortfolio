@@ -404,17 +404,21 @@
                 <div class="contact-content">
                     <h2 class="section-title">Let's Build Something Impactful</h2>
                     <p class="contact-subtitle">Have a project in mind? Let's discuss how we can work together.</p>
-                    <form class="contact-form" id="contact-form">
+                    <form class="contact-form" id="contact-form" action="https://formspree.io/f/xnqkvvyr" method="POST">
                         <div class="form-group">
-                            <input type="text" class="form-input" placeholder="Your Name" required>
+                            <input type="text" name="name" class="form-input" placeholder="Your Name" required>
                         </div>
                         <div class="form-group">
-                            <input type="email" class="form-input" placeholder="Your Email" required>
+                            <input type="email" name="email" class="form-input" placeholder="Your Email" required>
                         </div>
                         <div class="form-group">
-                            <textarea class="form-input form-textarea" placeholder="Tell me about your project" required></textarea>
+                            <input type="text" name="subject" class="form-input" placeholder="Subject" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea name="message" class="form-input form-textarea" placeholder="Tell me about your project" required></textarea>
                         </div>
                         <button type="submit" class="btn btn-primary btn-lg">Send Message</button>
+                        <div id="form-status" class="form-status"></div>
                     </form>
                     <div class="contact-links">
                         <a href="mailto:alex@example.com" class="contact-link">Sheikhmohammad7878@gmail.com</a>
