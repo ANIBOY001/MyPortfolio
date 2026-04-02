@@ -35,7 +35,7 @@
     const config = {
         SIM_RESOLUTION: 128,
         DYE_RESOLUTION: 512,
-        DENSITY_DISSIPATION: 0.985,   // Faster fade - less trailing
+        DENSITY_DISSIPATION: 0.97,   // Back to 0.97 - trailing OK
         VELOCITY_DISSIPATION: 0.985,   // Slow cinematic speed
         PRESSURE: 0.8,
         PRESSURE_ITERATIONS: 20,
@@ -145,8 +145,15 @@
             vec2 force = 0.5 * vec2(abs(T) - abs(B), abs(R) - abs(L));
             force = normalize(force + 0.00001) * curl * C;
             force.y *= -1.0;
+            
             vec2 vel = texture2D(uVelocity, vUv).xy;
-            gl_FragColor = vec4(vel + force * dt, 0.0, 1.0);
+            float speed = length(vel);
+            
+            // Mushroom effect: swirl outward at front, trail back
+            vec2 mushroomForce = normalize(vel + 0.001) * C * 0.5;
+            vel += force * dt + mushroomForce * dt * (1.0 + speed * 2.0);
+            
+            gl_FragColor = vec4(vel, 0.0, 1.0);
         }
     `;
 
