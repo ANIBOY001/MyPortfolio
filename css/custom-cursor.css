@@ -34,22 +34,10 @@
     background: #fff;
 }
 
-.hovering .cursor-ring {
-    width: 56px;
-    height: 56px;
-    border-width: 2px;
-    border-color: rgba(255, 255, 255, 0.8);
-}
-
 /* Click animation - quick shrink */
 .clicking .cursor-dot {
     width: 8px;
     height: 8px;
-}
-
-.clicking .cursor-ring {
-    width: 32px;
-    height: 32px;
 }
 
 /* Mobile - hide custom cursor */
