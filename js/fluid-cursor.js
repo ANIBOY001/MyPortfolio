@@ -40,7 +40,7 @@
         PRESSURE: 0.8,
         PRESSURE_ITERATIONS: 20,
         CURL: 25,                      // Medium curl - wide smooth vortices
-        SPLAT_RADIUS: 0.28,            // Wide soft interaction
+        SPLAT_RADIUS: 0.15,            // Smaller
         SPLAT_FORCE: 4500,             // Medium force - smooth spread
         COLOR: { r: 0.235, g: 0.949, b: 0.89 },  // Muted cyan
         EDGE_COLOR: { r: 0.4, g: 0.35, b: 0.55 }, // Slight purple shift
@@ -258,14 +258,14 @@
             // Desaturate for premium feel (30% desaturation)
             finalColor = desaturate(finalColor, 0.3);
             
-            // Soft edge glow - glowing gas, not neon light
-            float glow = exp(-density * 4.0) * 0.5;
-            finalColor += color * glow * 0.6;
+            // Soft edge glow - glowing gas, not neon light (increased)
+            float glow = exp(-density * 2.5) * 1.2;
+            finalColor += color * glow * 1.0;
             
             // Alpha based on brightness - smoky appearance
-            float alpha = density * 0.08;
-            alpha = clamp(alpha, 0.0, 0.15);
-            alpha += glow * 0.03;
+            float alpha = density * 0.1;
+            alpha = clamp(alpha, 0.0, 0.18);
+            alpha += glow * 0.06;
             
             gl_FragColor = vec4(finalColor, alpha);
         }
