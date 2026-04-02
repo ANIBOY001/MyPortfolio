@@ -1,0 +1,101 @@
+/* Mobile Hero Section Fixes */
+@media (max-width: 768px) {
+    .hero {
+        min-height: auto !important;
+        padding: 100px 16px 60px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+    
+    .hero-content {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        gap: 16px !important;
+    }
+    
+    .hero-greeting,
+    .hero-title,
+    .hero-subtitle {
+        grid-column: auto !important;
+        grid-row: auto !important;
+        text-align: center !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    
+    .hero-greeting {
+        font-size: 18px !important;
+        color: #a0a0a0 !important;
+        text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7) !important;
+        letter-spacing: 2px !important;
+        margin-bottom: 8px !important;
+    }
+    
+    .hero-title {
+        font-size: 28px !important;
+        line-height: 1.2 !important;
+        color: #c0c0c0 !important;
+        text-shadow: 3px 3px 0px rgba(100,100,100,0.9), 6px 6px 0px rgba(80,80,80,0.7) !important;
+        word-break: break-word !important;
+        margin-bottom: 12px !important;
+    }
+    
+    .hero-subtitle {
+        font-size: 16px !important;
+        color: #909090 !important;
+        text-shadow: 2px 2px 0px rgba(70,70,70,0.8) !important;
+        line-height: 1.5 !important;
+        margin: 0 auto 24px !important;
+    }
+    
+    .hero-cta {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+        width: 100% !important;
+        margin-top: 20px !important;
+        grid-column: auto !important;
+        grid-row: auto !important;
+    }
+    
+    .hero-cta .btn {
+        width: 100% !important;
+        min-height: 44px !important;
+        padding: 10px 20px !important;
+        font-size: 14px !important;
+    }
+    
+    .hero-stats {
+        flex-wrap: wrap !important;
+        gap: 24px !important;
+        margin-top: 40px !important;
+    }
+    
+    .hero-stats .stat-number {
+        font-size: 32px !important;
+    }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+    .hero {
+        padding: 80px 12px 40px !important;
+    }
+    
+    .hero-title {
+        font-size: 24px !important;
+    }
+    
+    .hero-greeting {
+        font-size: 16px !important;
+    }
+    
+    .hero-subtitle {
+        font-size: 14px !important;
+    }
+}
