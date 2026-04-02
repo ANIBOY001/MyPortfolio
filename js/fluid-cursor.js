@@ -31,18 +31,19 @@
     const texType = useHalfFloat ? ext.HALF_FLOAT_OES : gl.UNSIGNED_BYTE;
     const filtering = linearExt ? gl.LINEAR : gl.NEAREST;
 
-    // Configuration
+    // Configuration - Customized for silver-black water effect
     const config = {
         SIM_RESOLUTION: 128,
         DYE_RESOLUTION: 512,
-        DENSITY_DISSIPATION: 0.985,
-        VELOCITY_DISSIPATION: 0.98,
+        DENSITY_DISSIPATION: 0.992,  // Linger longer
+        VELOCITY_DISSIPATION: 0.985,   // Slower fluid motion
         PRESSURE: 0.8,
         PRESSURE_ITERATIONS: 20,
-        CURL: 20,
-        SPLAT_RADIUS: 0.3,
-        SPLAT_FORCE: 5000,
-        COLOR: { r: 0.65, g: 0.65, b: 0.63 }
+        CURL: 35,                      // More chaotic swirls
+        SPLAT_RADIUS: 0.15,            // Smaller size
+        SPLAT_FORCE: 4000,
+        COLOR: { r: 0.75, g: 0.75, b: 0.78 },  // Silver base
+        EDGE_COLOR: { r: 0.4, g: 0.5, b: 0.7 }  // Blueish edges
     };
 
     // Resize
@@ -199,12 +200,13 @@
         }
     `;
 
-    // Display shader with smoke texture
+    // Display shader with silver-black water effect, blueish edges, and glow
     const displayShader = `
         precision highp float;
         varying vec2 vUv;
         uniform sampler2D uTexture;
         uniform vec3 color;
+        uniform vec3 edgeColor;
         
         float hash(vec2 p) {
             return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
@@ -237,11 +239,22 @@
             float smoke = fbm(vUv * 3.0 + c.xy * 2.0) * 0.3 + 0.7;
             density *= smoke;
             
-            // Ethereal color
-            vec3 smokeColor = color * density * 1.5;
-            float alpha = min(density * 0.5, 0.4);
+            // Edge detection for blueish tint at edges
+            float edge = smoothstep(0.3, 0.8, density);
+            vec3 finalColor = mix(edgeColor, color, edge);
             
-            gl_FragColor = vec4(smokeColor, alpha);
+            // Water sliding visibility boost
+            finalColor *= density * 2.5;
+            
+            // Glow at edges
+            float glow = exp(-density * 4.0) * 0.4;
+            finalColor += edgeColor * glow;
+            
+            // More visible alpha (water effect)
+            float alpha = min(density * 0.8, 0.7);
+            alpha = max(alpha, glow * 0.3);
+            
+            gl_FragColor = vec4(finalColor, alpha);
         }
     `;
 
@@ -359,6 +372,7 @@
     const pressureUni = getUniforms(pressureProgram);
     const gradientSubtractUni = getUniforms(gradientSubtractProgram);
     const displayUni = getUniforms(displayProgram);
+    displayUni.edgeColor = gl.getUniformLocation(displayProgram, 'edgeColor');
 
     // ==================== RENDER SETUP ====================
 
@@ -568,6 +582,7 @@
         gl.bindTexture(gl.TEXTURE_2D, density.read.texture);
         gl.uniform1i(displayUni.uTexture, 0);
         gl.uniform3f(displayUni.color, config.COLOR.r, config.COLOR.g, config.COLOR.b);
+        gl.uniform3f(displayUni.edgeColor, config.EDGE_COLOR.r, config.EDGE_COLOR.g, config.EDGE_COLOR.b);
         gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
 
         requestAnimationFrame(update);
