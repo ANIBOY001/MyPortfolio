@@ -1,0 +1,23 @@
+/* ========================================
+   FINAL MOBILE NAV OVERRIDE - Keep nav visible
+   ======================================== */
+@media (max-width: 768px) {
+    .nav .nav-links {
+        display: flex !important;
+        position: static !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        flex-direction: row !important;
+        background: transparent !important;
+        padding: 0 !important;
+        gap: 12px !important;
+        pointer-events: auto !important;
+    }
+    
+    .nav .nav-links a {
+        display: block !important;
+        font-size: 13px !important;
+        padding: 6px 10px !important;
+        color: var(--text-secondary) !important;
+    }
+}
