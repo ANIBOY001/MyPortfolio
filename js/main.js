@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initFloatingElements();
     initPageLoad();
     initProgressBars();
-    initGlitchEffect();
     init3DTilt();
     initMobileMenu();
 });
@@ -440,39 +439,6 @@ function initProgressBars() {
     }, { threshold: 0.3 });
     
     observer.observe(container);
-}
-
-// Glitch Text Effect
-function initGlitchEffect() {
-    const brand = document.querySelector('.nav-brand');
-    if (!brand) return;
-    
-    const originalText = brand.textContent;
-    const chars = '!@#$%^&*()_+-=[]{}|;:,.<>?';
-    
-    brand.addEventListener('mouseenter', () => {
-        let iterations = 0;
-        const interval = setInterval(() => {
-            brand.textContent = originalText
-                .split('')
-                .map((char, index) => {
-                    if (index < iterations) {
-                        return originalText[index];
-                    }
-                    return chars[Math.floor(Math.random() * chars.length)];
-                })
-                .join('');
-            
-            if (iterations >= originalText.length) {
-                clearInterval(interval);
-            }
-            iterations += 1/3;
-        }, 30);
-    });
-    
-    brand.addEventListener('mouseleave', () => {
-        brand.textContent = originalText;
-    });
 }
 
 // 3D Tilt Effect for Cards
