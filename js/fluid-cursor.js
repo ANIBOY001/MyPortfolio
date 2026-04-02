@@ -40,9 +40,9 @@
         PRESSURE: 0.8,
         PRESSURE_ITERATIONS: 20,
         CURL: 25,                      // Medium curl - wide smooth vortices
-        SPLAT_RADIUS: 0.18,            // Slightly smaller
+        SPLAT_RADIUS: 0.15,            // A little smaller
         SPLAT_FORCE: 4500,
-        COLOR: { r: 0.75, g: 0.75, b: 0.78 },  // Grayish silver matching website
+        COLOR: { r: 0.88, g: 0.88, b: 0.9 },  // Brighter silver - more stand out
         EDGE_COLOR: { r: 0.55, g: 0.55, b: 0.6 }, // Slight blue-gray shift
         IDLE_MOTION: true,             // Continuous subtle background motion
         COLOR_SHIFT_SPEED: 0.02        // HSV dynamic color shifting
