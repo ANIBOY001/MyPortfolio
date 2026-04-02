@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initPageLoad();
     initProgressBars();
     init3DTilt();
-    initMobileMenu();
 });
 
 // Theme Toggle
