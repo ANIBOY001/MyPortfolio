@@ -261,6 +261,13 @@
             vec4 c = texture2D(uTexture, vUv);
             float density = (c.r + c.g + c.b) * 0.333;
             
+            // Sample neighbors for edge detection
+            float L = texture2D(uTexture, vUv - vec2(0.01, 0.0)).x;
+            float R = texture2D(uTexture, vUv + vec2(0.01, 0.0)).x;
+            float T = texture2D(uTexture, vUv + vec2(0.0, 0.01)).x;
+            float B = texture2D(uTexture, vUv - vec2(0.0, 0.01)).x;
+            float neighborAvg = (L + R + T + B) * 0.25 * 0.333;
+            
             // Low density - thin smoke layers
             density *= 0.2;
             
@@ -279,6 +286,11 @@
             float glow = exp(-density * 1.2) * 5.5;
             float waveGlow = density * 1.8;
             finalColor += color * (glow + waveGlow) * 5.5;
+            
+            // Front edges pitch black - where density is high but neighbors are lower (front of wave)
+            float densityGradient = density - neighborAvg * 0.2;
+            float isFrontEdge = smoothstep(0.02, 0.08, densityGradient) * smoothstep(0.15, 0.05, density);
+            finalColor = mix(finalColor, vec3(0.0, 0.0, 0.0), isFrontEdge * 0.85);
             
             // Very low opacity - more dense but no fog (0.03 - 0.12 range)
             float alpha = density * 0.06;
