@@ -30,7 +30,7 @@
         CURL: 20,
         SPLAT_RADIUS: 0.25,
         SPLAT_FORCE: 3000,
-        COLOR: { r: 0.03, g: 0.03, b: 0.03 },
+        COLOR: { r: 0.06, g: 0.06, b: 0.06 },
         BLUR_AMOUNT: 2.0,
         SMOOTHING: 0.08
     };
@@ -93,8 +93,8 @@
             p.x *= aspectRatio;
             float strength = exp(-dot(p, p) / radius);
             vec3 base = texture2D(uTarget, vUv).xyz;
-            // Much weaker splat - user disturbs, doesn't control
-            gl_FragColor = vec4(base + strength * color * 0.2, 1.0);
+            // Moderate strength - visible but subtle
+            gl_FragColor = vec4(base + strength * color * 0.8, 1.0);
         }
     `;
 
@@ -217,7 +217,7 @@
             float density = (c.r + c.g + c.b) * 0.333;
             
             // Ultra low density - barely visible (60% less)
-            density *= 0.06;
+            density *= 0.15;
             
             // Soft falloff - no sharp edges
             float edge = smoothstep(0.0, 0.4, density);
@@ -227,11 +227,11 @@
             float glow = exp(-density * 4.0) * 1.2;
             finalColor += color * glow * 0.3;
             
-            // Ultra low opacity - should barely notice it
-            float alpha = density * 0.02;
-            alpha = clamp(alpha, 0.0, 0.035);
+            // Low opacity - subtle but visible
+            float alpha = density * 0.08;
+            alpha = clamp(alpha, 0.0, 0.08);
             
-            gl_FragColor = vec4(finalColor, alpha * 0.3);
+            gl_FragColor = vec4(finalColor, alpha * 0.5);
         }
     `;
 
@@ -365,10 +365,7 @@
     // ==================== SIMULATION ====================
 
     function splat(x, y, dx, dy, intensity = 1.0) {
-        // Reduce impact
-        dx *= 0.3;
-        dy *= 0.3;
-        const colorScale = intensity * 0.5;
+        const colorScale = intensity * 1.5;
         
         gl.bindFramebuffer(gl.FRAMEBUFFER, density.write.fbo);
         gl.viewport(0, 0, density.write.width, density.write.height);
