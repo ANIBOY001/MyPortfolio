@@ -160,15 +160,13 @@ body:hover .cursor-glow {
     font-family: var(--font-heading);
     font-size: 24px;
     font-weight: 700;
-    background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--text-primary);
     position: relative;
     letter-spacing: 1px;
     display: flex;
     align-items: center;
     gap: 10px;
+    text-decoration: none;
 }
 
 .nav-logo {
@@ -176,35 +174,18 @@ body:hover .cursor-glow {
     height: 32px;
     border-radius: 6px;
     object-fit: contain;
+    display: block;
 }
 
-.nav-brand::before {
-    content: 'S.M ARAF';
-    position: absolute;
-    left: 42px;
-    top: 0;
-    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 50%, var(--accent) 100%);
+.nav-brand span {
+    background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent) 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    z-index: -1;
 }
 
-.nav-brand:hover {
-    text-shadow: 0 0 40px rgba(223, 222, 220, 0.6), 0 0 80px rgba(166, 167, 162, 0.3);
+.nav-brand:hover span {
     filter: brightness(1.2);
-    transition: all 0.3s ease;
-}
-
-.nav-brand:hover::before {
-    animation: shimmer-brand 2s infinite;
-}
-
-@keyframes shimmer-brand {
-    0% { background-position: -200% center; }
-    100% { background-position: 200% center; }
 }
 
 .nav-links {
