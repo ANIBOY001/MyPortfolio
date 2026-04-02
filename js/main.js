@@ -136,28 +136,36 @@ function animateValue(element, start, end, duration) {
 // Project Modal
 const projectData = {
     1: {
-        title: 'CloudSync Platform',
-        desc: 'Real-time data synchronization platform handling 10M+ daily transactions',
-        problem: 'Companies struggled with data consistency across distributed systems, leading to sync conflicts and data loss.',
-        solution: 'Built an event-driven architecture with conflict-free replicated data types (CRDTs) for automatic conflict resolution.',
-        architecture: ['React frontend with virtualized lists', 'Node.js microservices with Redis pub/sub', 'PostgreSQL with logical replication', 'WebSocket connections for real-time updates'],
-        tech: ['React', 'Node.js', 'PostgreSQL', 'Redis', 'Docker', 'Kubernetes']
+        title: 'E-commerce Platform',
+        desc: 'Full shopping experience: product catalog, cart, checkout, and payments. Built for real businesses.',
+        problem: 'Small businesses need robust e-commerce solutions without the complexity of enterprise platforms. Existing options were either too expensive or lacked essential features.',
+        solution: 'Built a scalable e-commerce platform with complete shopping flow, payment integration, and admin dashboard for managing products and orders.',
+        architecture: ['React/Next.js frontend with server-side rendering', 'Node.js + Express REST API with JWT auth', 'MongoDB for flexible product catalog storage', 'Stripe & PayPal payment integration', 'Admin dashboard for inventory and order management'],
+        tech: ['React', 'Next.js', 'Node.js', 'Express', 'MongoDB', 'PostgreSQL', 'Stripe', 'PayPal']
     },
     2: {
-        title: 'AI Dashboard',
-        desc: 'ML-powered analytics dashboard with predictive insights',
-        problem: 'Business teams lacked actionable insights from their data, relying on manual analysis that took days.',
-        solution: 'Created an AI-powered dashboard that automatically analyzes trends and predicts future metrics with 94% accuracy.',
-        architecture: ['Next.js with server-side rendering', 'Python FastAPI with TensorFlow', 'Real-time data pipeline with Apache Kafka', 'Interactive D3.js visualizations'],
-        tech: ['Next.js', 'Python', 'TensorFlow', 'AWS', 'Kafka', 'D3.js']
+        title: 'Portfolio CMS',
+        desc: 'Advanced portfolio with blog system, dynamic project gallery, and integrated contact form. Production-ready UI.',
+        problem: 'Developers need to showcase their work professionally while also sharing knowledge through blogs, without managing multiple platforms.',
+        solution: 'Created a unified portfolio and blog platform with Markdown support, dynamic galleries, and seamless contact integration.',
+        architecture: ['React/Next.js for fast, SEO-friendly pages', 'Node.js backend or serverless functions', 'Markdown processing for blog content', 'Dynamic project gallery with filtering', 'Email integration for contact forms'],
+        tech: ['React', 'Next.js', 'Node.js', 'Markdown', 'Serverless', 'Email API']
     },
     3: {
-        title: 'E-Commerce API',
-        desc: 'Headless commerce API serving 500K+ requests daily',
-        problem: 'Legacy monolithic commerce platform was slow, expensive, and inflexible for modern frontend experiences.',
-        solution: 'Developed a high-performance headless API with sub-50ms response times and flexible data models.',
-        architecture: ['Go microservices for core API', 'GraphQL federation layer', 'MongoDB for product catalog', 'Elasticsearch for search', 'CDN edge caching'],
-        tech: ['Go', 'GraphQL', 'MongoDB', 'Elasticsearch', 'Docker', 'Redis']
+        title: 'Blog & CMS Platform',
+        desc: 'Users can create accounts, write posts, and comment. Full content management with admin panel.',
+        problem: 'Content creators need a platform that combines user management, content creation, and community engagement in one system.',
+        solution: 'Developed a full-featured CMS with authentication, rich text editing, commenting system, and comprehensive admin controls.',
+        architecture: ['Node.js + Express RESTful API', 'MongoDB for document storage', 'React frontend with rich text editor', 'JWT-based user authentication', 'Admin panel for content moderation'],
+        tech: ['Node.js', 'Express', 'MongoDB', 'React', 'JWT', 'Auth']
+    },
+    4: {
+        title: 'Social Connect Platform',
+        desc: 'Real-time social platform with posts, likes, comments, follows, and live messaging. Full user engagement system.',
+        problem: 'Building real-time social features requires complex state management, authentication, and WebSocket connections that are hard to implement correctly.',
+        solution: 'Created a complete social platform demonstrating real-time messaging, complex state management, and user engagement features.',
+        architecture: ['React with Tailwind/Chakra UI frontend', 'Node.js + Express/NestJS backend', 'MongoDB/Firebase for data storage', 'Socket.io for real-time messaging', 'Firebase real-time DB for live updates'],
+        tech: ['React', 'Tailwind CSS', 'Node.js', 'Socket.io', 'Firebase', 'MongoDB']
     }
 };
 
