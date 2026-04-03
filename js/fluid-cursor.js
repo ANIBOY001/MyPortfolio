@@ -1,6 +1,6 @@
 'use strict';
 
-const canvas = document.getElementById('fluid-cursor');
+const canvas = document.getElementById('cursor-canvas');
 canvas.width = canvas.clientWidth;
 canvas.height = canvas.clientHeight;
 
