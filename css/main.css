@@ -1966,26 +1966,64 @@ body {
 }
 
 /* ========================================
-   STATS SECTION
+   STATS SECTION - Horizontal Marquee
    ======================================== */
 .stats {
     padding: 80px 0;
     background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
     border-top: 1px solid var(--border-color);
     border-bottom: 1px solid var(--border-color);
+    overflow: hidden;
 }
 
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 40px;
-    text-align: center;
+.stats-marquee-container {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
 }
 
-.stat-item {
+.stats-marquee {
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    gap: 80px;
+    animation: marqueeScroll 20s linear infinite;
+    width: max-content;
+}
+
+.stats-marquee:hover {
+    animation-play-state: paused;
+}
+
+@keyframes marqueeScroll {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+.stat-marquee-item {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 0 40px;
+    border-right: 1px solid var(--border-color);
+    animation: pulseGlow 3s ease-in-out infinite;
+}
+
+.stat-marquee-item:last-child {
+    border-right: none;
+}
+
+@keyframes pulseGlow {
+    0%, 100% {
+        filter: brightness(1);
+        text-shadow: 0 0 10px rgba(166, 167, 162, 0.2);
+    }
+    50% {
+        filter: brightness(1.2);
+        text-shadow: 0 0 30px rgba(166, 167, 162, 0.5), 0 0 60px rgba(166, 167, 162, 0.3);
+    }
 }
 
 .stat-number-large {
@@ -1997,6 +2035,7 @@ body {
     background-clip: text;
     -webkit-text-fill-color: transparent;
     line-height: 1;
+    animation: countUp 0.5s ease-out, float 3s ease-in-out infinite;
 }
 
 .stat-suffix {
@@ -2004,15 +2043,32 @@ body {
     font-size: 32px;
     font-weight: 600;
     color: var(--accent);
-    margin-top: -10px;
+    animation: bounce 2s ease-in-out infinite;
 }
 
 .stat-label-large {
-    font-size: 18px; color: #a0a0a0; text-shadow: 2px 2px 0px rgba(80,80,80,0.9), 4px 4px 0px rgba(60,60,60,0.7); letter-spacing: 3px;
+    font-size: 18px;
     color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 2px;
-    margin-top: 12px;
+    margin-left: 12px;
+    animation: shimmer 4s linear infinite;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .stat-number-large {
+        font-size: 36px;
+    }
+    .stat-suffix {
+        font-size: 24px;
+    }
+    .stat-label-large {
+        font-size: 14px;
+    }
+    .stats-marquee {
+        gap: 40px;
+    }
 }
 
 /* ========================================
