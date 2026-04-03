@@ -64,7 +64,8 @@ canvas {
     height: 100vh;
     display: block;
     pointer-events: none;
-    z-index: 1;
+    z-index: 9999;
+    background: transparent;
 }
 
 /* Hide on mobile */
