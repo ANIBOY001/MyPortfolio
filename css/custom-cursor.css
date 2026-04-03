@@ -1,61 +1,11 @@
-/* Flow Design Agency Style Cursor - Clean & Minimal */
+/* Fluid Cursor Canvas - Full screen overlay */
 
 /* Hide default cursor */
 * {
     cursor: none !important;
 }
 
-/* Custom cursor on top of everything */
-.custom-cursor {
-    position: fixed;
-    pointer-events: none;
-    z-index: 10002;
-}
-
-/* Main cursor dot - Simple circle with color inversion */
-.cursor-dot {
-    width: 12px;
-    height: 12px;
-    background: #fff;
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    mix-blend-mode: difference;
-}
-
-/* Cursor outer ring - HIDDEN */
-.cursor-ring {
-    display: none !important;
-}
-
-/* Hover states - expands smoothly */
-.hovering .cursor-dot {
-    width: 48px;
-    height: 48px;
-    background: #fff;
-}
-
-/* Click animation - quick shrink */
-.clicking .cursor-dot {
-    width: 8px;
-    height: 8px;
-}
-
-/* Mobile - hide custom cursor */
-@media (pointer: coarse) {
-    .custom-cursor {
-        display: none !important;
-    }
-    
-    * {
-        cursor: auto !important;
-    }
-    
-    .fluid-cursor {
-        display: none !important;
-    }
-}
-
-/* Fluid Canvas - Full screen */
+/* Canvas positioning */
 canvas {
     position: fixed;
     top: 0;
@@ -68,8 +18,12 @@ canvas {
     background: transparent;
 }
 
-/* Hide on mobile */
+/* Mobile - show default cursor and hide fluid canvas */
 @media (pointer: coarse) {
+    * {
+        cursor: auto !important;
+    }
+    
     canvas {
         display: none !important;
     }
