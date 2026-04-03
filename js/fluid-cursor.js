@@ -1,8 +1,15 @@
 'use strict';
 
+try {
 const canvas = document.getElementById('fluid-cursor');
-canvas.width = canvas.clientWidth;
-canvas.height = canvas.clientHeight;
+if (!canvas) {
+    console.log('Fluid canvas not found');
+    return;
+}
+
+// Wait for layout
+canvas.width = window.innerWidth || canvas.clientWidth || 1920;
+canvas.height = window.innerHeight || canvas.clientHeight || 1080;
 
 let config = {
   TEXTURE_DOWNSAMPLE: 1,
@@ -674,3 +681,7 @@ window.addEventListener('touchend', e => {
   if (touches[i].identifier == pointers[j].id)
   pointers[j].down = false;
 });
+
+} catch (e) {
+  console.error('Fluid cursor error:', e);
+}
