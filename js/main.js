@@ -1,6 +1,8 @@
 // Portfolio Interactivity
 document.addEventListener('DOMContentLoaded', () => {
     initThemeToggle();
+    initCursorGlow();
+    initCustomCursor();
     initScrollReveal();
     initAnimatedStats();
     initProjectModal();
@@ -28,6 +30,122 @@ function initThemeToggle() {
         const next = current === 'dark' ? 'light' : 'dark';
         html.setAttribute('data-theme', next);
         localStorage.setItem('theme', next);
+    });
+}
+
+// Cursor Glow Effect
+function initCursorGlow() {
+    const cursor = document.querySelector('.cursor-glow');
+    if (!cursor || window.matchMedia('(pointer: coarse)').matches) return;
+    
+    let mouseX = 0, mouseY = 0;
+    let currentX = 0, currentY = 0;
+    let rafId = null;
+    let isActive = false;
+    let inactivityTimeout = null;
+    
+    document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        
+        if (!isActive) {
+            isActive = true;
+            animate();
+        }
+        
+        clearTimeout(inactivityTimeout);
+        inactivityTimeout = setTimeout(() => {
+            isActive = false;
+            cancelAnimationFrame(rafId);
+        }, 100);
+    }, { passive: true });
+    
+    function animate() {
+        if (!isActive) return;
+        
+        currentX += (mouseX - currentX) * 0.1;
+        currentY += (mouseY - currentY) * 0.1;
+        
+        cursor.style.left = currentX + 'px';
+        cursor.style.top = currentY + 'px';
+        
+        rafId = requestAnimationFrame(animate);
+    }
+}
+
+// Custom Cursor
+function initCustomCursor() {
+    // Skip on touch devices
+    if (window.matchMedia('(pointer: coarse)').matches) return;
+    
+    const dot = document.querySelector('.cursor-dot');
+    const ring = document.querySelector('.cursor-ring');
+    if (!dot) return;
+    
+    let mouseX = 0, mouseY = 0;
+    let ringX = 0, ringY = 0;
+    let isActive = false;
+    let rafId = null;
+    let inactivityTimeout = null;
+    
+    // Mouse move handler
+    document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        
+        // Move dot instantly
+        dot.style.left = mouseX + 'px';
+        dot.style.top = mouseY + 'px';
+        
+        if (!isActive) {
+            isActive = true;
+            animateRing();
+        }
+        
+        clearTimeout(inactivityTimeout);
+        inactivityTimeout = setTimeout(() => {
+            isActive = false;
+            cancelAnimationFrame(rafId);
+        }, 100);
+    }, { passive: true });
+    
+    // Smooth ring animation
+    function animateRing() {
+        if (!isActive || !ring) return;
+        
+        ringX += (mouseX - ringX) * 0.15;
+        ringY += (mouseY - ringY) * 0.15;
+        
+        ring.style.left = ringX + 'px';
+        ring.style.top = ringY + 'px';
+        
+        rafId = requestAnimationFrame(animateRing);
+    }
+    
+    // Click effects
+    document.addEventListener('mousedown', () => {
+        dot.classList.add('clicking');
+        if (ring) ring.classList.add('clicking');
+    });
+    
+    document.addEventListener('mouseup', () => {
+        dot.classList.remove('clicking');
+        if (ring) ring.classList.remove('clicking');
+    });
+    
+    // Hover effects on interactive elements
+    const interactiveElements = document.querySelectorAll('a, button, .project-card, .service-card, input, textarea');
+    
+    interactiveElements.forEach(el => {
+        el.addEventListener('mouseenter', () => {
+            dot.classList.add('hovering');
+            if (ring) ring.classList.add('hovering');
+        });
+        
+        el.addEventListener('mouseleave', () => {
+            dot.classList.remove('hovering');
+            if (ring) ring.classList.remove('hovering');
+        });
     });
 }
 

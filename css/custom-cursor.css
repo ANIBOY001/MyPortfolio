@@ -5,6 +5,41 @@
     cursor: none !important;
 }
 
+/* Custom cursor elements */
+.custom-cursor {
+    position: fixed;
+    pointer-events: none;
+    z-index: 10002;
+}
+
+/* Main cursor dot - Simple circle */
+.cursor-dot {
+    width: 12px;
+    height: 12px;
+    background: #fff;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    mix-blend-mode: difference;
+}
+
+/* Cursor outer ring - Hidden */
+.cursor-ring {
+    display: none !important;
+}
+
+/* Hover states - expands smoothly */
+.hovering .cursor-dot {
+    width: 48px;
+    height: 48px;
+    background: #fff;
+}
+
+/* Click animation - quick shrink */
+.clicking .cursor-dot {
+    width: 8px;
+    height: 8px;
+}
+
 /* Canvas positioning */
 canvas {
     position: fixed;
@@ -18,13 +53,28 @@ canvas {
     background: transparent;
 }
 
+/* Cursor glow effect */
+.cursor-glow {
+    position: fixed;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(166, 167, 162, 0.15) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    filter: blur(20px);
+}
+
 /* Mobile - show default cursor and hide fluid canvas */
 @media (pointer: coarse) {
     * {
         cursor: auto !important;
     }
     
-    canvas {
+    canvas,
+    .custom-cursor,
+    .cursor-glow {
         display: none !important;
     }
 }
