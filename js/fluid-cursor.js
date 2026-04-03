@@ -1,8 +1,8 @@
 'use strict';
 
 const canvas = document.getElementsByTagName('canvas')[0];
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+canvas.width = canvas.clientWidth || window.innerWidth;
+canvas.height = canvas.clientHeight || window.innerHeight;
 
 let config = {
   TEXTURE_DOWNSAMPLE: 1,
@@ -20,7 +20,7 @@ let splatStack = [];
 const { gl, ext } = getWebGLContext(canvas);
 
 function getWebGLContext(canvas) {
-  const params = { alpha: false, depth: false, stencil: false, antialias: false };
+  const params = { alpha: true, depth: false, stencil: false, antialias: false };
 
   let gl = canvas.getContext('webgl2', params);
   const isWebGL2 = !!gl;
@@ -37,7 +37,7 @@ function getWebGLContext(canvas) {
     supportLinearFiltering = gl.getExtension('OES_texture_half_float_linear');
   }
 
-  gl.clearColor(0.0, 0.0, 0.0, 1.0);
+  gl.clearColor(0.0, 0.0, 0.0, 0.0);
 
   const halfFloatTexType = isWebGL2 ? gl.HALF_FLOAT : halfFloat.HALF_FLOAT_OES;
   let formatRGBA;
