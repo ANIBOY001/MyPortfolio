@@ -2665,7 +2665,7 @@ body {
 }
 
 .about-bg {
-    background: url('images/hero-bg.jpg') center/cover no-repeat;
+    background: url('../images/hero-bg.jpg') center/cover no-repeat;
     animation: sectionBgZoom 15s ease-in-out infinite;
 }
 
