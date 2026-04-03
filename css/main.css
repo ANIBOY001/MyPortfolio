@@ -529,51 +529,104 @@ body {
     gap: 12px;
 }
 
-/* Skills Section */
+/* Skills Section - Premium Glass Cards */
 .skills {
-    padding: 100px 0;
+    padding: 140px 0;
     background: var(--bg-secondary);
 }
 
 .skills-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 40px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
 }
 
-.skill-category {
-    text-align: center;
+.skill-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 40px 32px;
+    transition: all 0.4s ease;
+    opacity: 0;
+    animation: popIn 0.6s ease-out forwards;
 }
 
-.skill-category-title {
-    font-family: var(--font-heading);
-    font-size: 20px;
-    font-weight: 600;
+.skill-card:nth-child(1) { animation-delay: 0.1s; }
+.skill-card:nth-child(2) { animation-delay: 0.2s; }
+.skill-card:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes popIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.skill-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    border-color: rgba(99, 102, 241, 0.5);
+    box-shadow: 0 20px 40px rgba(99, 102, 241, 0.2), 
+                0 0 60px rgba(99, 102, 241, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.skill-icon {
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2));
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin-bottom: 24px;
+    color: #6366f1;
+}
+
+.skill-icon svg {
+    width: 28px;
+    height: 28px;
+}
+
+.skill-title {
+    font-family: var(--font-heading);
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 12px;
     color: var(--text-primary);
+}
+
+.skill-desc {
+    font-size: 15px;
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+    line-height: 1.6;
 }
 
 .skill-tags {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
-    gap: 12px;
+    gap: 8px;
 }
 
 .skill-tag {
-    padding: 12px 24px;
-    background: var(--bg-tertiary);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-md);
-    font-size: 18px;
+    padding: 8px 16px;
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 100px;
+    font-size: 13px;
     font-weight: 500;
-    transition: all var(--transition-fast);
+    color: #6366f1;
+    transition: all 0.3s ease;
 }
 
-.skill-tag.glow:hover {
-    border-color: var(--accent);
-    box-shadow: 0 0 20px rgba(166, 167, 162, 0.3);
-    transform: translateY(-2px);
+.skill-tag:hover {
+    background: rgba(99, 102, 241, 0.2);
+    border-color: rgba(99, 102, 241, 0.5);
 }
 
 /* About Section - Premium Redesign */
