@@ -1,8 +1,8 @@
 'use strict';
 
 const canvas = document.getElementsByTagName('canvas')[0];
-canvas.width = canvas.clientWidth;
-canvas.height = canvas.clientHeight;
+canvas.width = canvas.clientWidth || window.innerWidth;
+canvas.height = canvas.clientHeight || window.innerHeight;
 
 let config = {
   TEXTURE_DOWNSAMPLE: 1,
