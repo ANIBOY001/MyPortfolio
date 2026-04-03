@@ -17,16 +17,18 @@
 
     // Vertex shader
     const vertexShader = gl.createShader(gl.VERTEX_SHADER);
-    gl.shaderSource(vertexShader, `n        attribute vec2 position;
+    gl.shaderSource(vertexShader, `
+        attribute vec2 position;
         void main() {
             gl_Position = vec4(position, 0.0, 1.0);
         }
-    );
+    `);
     gl.compileShader(vertexShader);
 
     // Fragment shader - ripple effect
     const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
-    gl.shaderSource(fragmentShader, `n        precision mediump float;
+    gl.shaderSource(fragmentShader, `
+        precision mediump float;
         uniform vec2 resolution;
         uniform vec2 mouse;
         uniform float time;
@@ -42,7 +44,7 @@
             float gray = ripple * 0.15;
             gl_FragColor = vec4(vec3(gray), gray * 0.5);
         }
-    );
+    `);
     gl.compileShader(fragmentShader);
 
     const program = gl.createProgram();
