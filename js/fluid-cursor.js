@@ -1,5 +1,7 @@
 'use strict';
 
+(function() {
+
 try {
 const canvas = document.getElementById('fluid-cursor');
 if (!canvas) {
@@ -685,3 +687,5 @@ window.addEventListener('touchend', e => {
 } catch (e) {
   console.error('Fluid cursor error:', e);
 }
+
+})();
