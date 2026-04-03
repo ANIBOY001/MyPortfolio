@@ -1,8 +1,8 @@
 'use strict';
 
 const canvas = document.getElementsByTagName('canvas')[0];
-canvas.width = canvas.clientWidth;
-canvas.height = canvas.clientHeight;
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
 let config = {
   TEXTURE_DOWNSAMPLE: 1,
@@ -613,9 +613,9 @@ function multipleSplats(amount) {
 }
 
 function resizeCanvas() {
-  if (canvas.width != canvas.clientWidth || canvas.height != canvas.clientHeight) {
-    canvas.width = canvas.clientWidth;
-    canvas.height = canvas.clientHeight;
+  if (canvas.width != window.innerWidth || canvas.height != window.innerHeight) {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
     initFramebuffers();
   }
 }
