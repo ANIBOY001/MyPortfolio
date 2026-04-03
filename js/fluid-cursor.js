@@ -200,7 +200,10 @@ const displayShader = compileShader(gl.FRAGMENT_SHADER, `
     uniform sampler2D uTexture;
 
     void main () {
-        gl_FragColor = texture2D(uTexture, vUv);
+        vec4 c = texture2D(uTexture, vUv);
+        // Make black background transparent, only show fluid
+        float alpha = max(max(c.r, c.g), c.b) * 2.0;
+        gl_FragColor = vec4(c.rgb, alpha);
     }
 `);
 
