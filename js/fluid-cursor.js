@@ -1,8 +1,8 @@
 'use strict';
 
 const canvas = document.getElementsByTagName('canvas')[0];
-canvas.width = canvas.clientWidth || window.innerWidth;
-canvas.height = canvas.clientHeight || window.innerHeight;
+canvas.width = canvas.clientWidth;
+canvas.height = canvas.clientHeight;
 
 let config = {
   TEXTURE_DOWNSAMPLE: 1,
@@ -20,7 +20,7 @@ let splatStack = [];
 const { gl, ext } = getWebGLContext(canvas);
 
 function getWebGLContext(canvas) {
-  const params = { alpha: true, depth: false, stencil: false, antialias: false };
+  const params = { alpha: false, depth: false, stencil: false, antialias: false };
 
   let gl = canvas.getContext('webgl2', params);
   const isWebGL2 = !!gl;
@@ -37,7 +37,7 @@ function getWebGLContext(canvas) {
     supportLinearFiltering = gl.getExtension('OES_texture_half_float_linear');
   }
 
-  gl.clearColor(0.0, 0.0, 0.0, 0.0);
+  gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
   const halfFloatTexType = isWebGL2 ? gl.HALF_FLOAT : halfFloat.HALF_FLOAT_OES;
   let formatRGBA;
@@ -613,14 +613,14 @@ function multipleSplats(amount) {
 }
 
 function resizeCanvas() {
-  if (canvas.width != window.innerWidth || canvas.height != window.innerHeight) {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+  if (canvas.width != canvas.clientWidth || canvas.height != canvas.clientHeight) {
+    canvas.width = canvas.clientWidth;
+    canvas.height = canvas.clientHeight;
     initFramebuffers();
   }
 }
 
-document.getElementsByTagName('canvas')[0].addEventListener('mousemove', e => {
+canvas.addEventListener('mousemove', e => {
   pointers[0].moved = pointers[0].down;
   pointers[0].dx = (e.offsetX - pointers[0].x) * 10.0;
   pointers[0].dy = (e.offsetY - pointers[0].y) * 10.0;
